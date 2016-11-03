@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Flower</title>
+
+    <link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+  </head>
+
+  <body class="canvas canvas_flower canvas_flower_index">
+    <canvas id="canvas"></canvas>
+
+<div class="controls">
+	<p>
+		<label for="count">Point Pairs</label>
+		<input id="count" type="range" name="count" 
+			min="1" max="12" step="1" value="5"
+			oninput="changeParams('count', this.value);
+				countLabel.value = this.value">
+		<output name="countLabel" id="countLabel">5</output>
+	</p>
+	<p>
+		<label for="radius">Radius Base</label>
+		<input id="radius" type="range" name="radius" 
+			min="0" max="400" step="20" value="150"
+			oninput="changeParams('radius', this.value);
+				radiusLabel.value = this.value">
+		<output name="radiusLabel" id="radiusLabel">150</output>
+	</p>
+	<p>
+		<label for="spread">Radius Spread</label>
+		<input id="spread" type="range" name="spread" 
+			min="0" max="200" step="10" value="60"
+			oninput="changeParams('spread', this.value);
+				spreadLabel.value = this.value">
+		<output name="spreadLabel" id="spreadLabel">60</output>
+	</p>
+	<p>
+		<label for="speed">Rotation Speed</label>
+		<input id="speed" type="range" name="speed" 
+			min="0" max="100" step="5" value="50"
+			oninput="changeParams('speed', this.value);
+				speedLabel.value = this.value">
+		<output name="speedLabel" id="speedLabel">50</output>
+	</p>
+	<p>
+		<label for="pulse">Pulse Speed</label>
+		<input id="pulse" type="range" name="pulse" 
+			min="0" max="100" step="5" value="30"
+			oninput="changeParams('pulse', this.value);
+				pulseLabel.value = this.value">
+		<output name="pulseLabel" id="pulseLabel">30</output>
+	</p>
+</div>
+
+<script>
+'use strict'
+
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+canvas.width = canvas.height = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
+
+var opts,
+	constraints,
+	points,
+	tick
+
+function init() {
+	opts = {
+		count: 5,
+		radius: 150,
+		spread: 60,
+		speed: 50,
+		pulse: 30
+	}
+
+	constraints = {
+		count: {
+			min: 1,
+			max: 12
+		},
+		radius: {
+			min: 0,
+			max: 400
+		},
+		spread: {
+			min: 0,
+			max: 200
+		},
+		speed: {
+			min: 0,
+			max: 100
+		},
+		pulse: {
+			min: 0,
+			max: 100
+		}
+	}
+
+	points = []
+	tick = 0
+
+	reset()
+	render()
+}
+
+function reset() {
+	points.length = 0
+	for (var i = 0; i < opts.count * 2; i++) {
+		var angle = i / (opts.count * 2) * Math.PI * 2
+		points.push({
+			alt: i % 2 !== 0 ? true : false,
+			x: 0,
+			y: 0,
+			x1: Math.cos(angle) * (opts.radius - opts.spread),
+			y1: Math.sin(angle) * (opts.radius - opts.spread),
+			x2: Math.cos(angle) * (opts.radius + opts.spread),
+			y2: Math.sin(angle) * (opts.radius + opts.spread)
+		})
+	}
+}
+
+function changeParams(param, value) {
+	opts[param] = parseFloat(value)
+	reset()
+}
+
+function randInt(min, max) {
+	return Math.floor(min + Math.random() * (max - min + 1))
+}
+
+function randomize() {
+	opts.count = randInt(constraints.count.min, constraints.count.max)
+	opts.radius = randInt(constraints.radius.min, constraints.radius.max)
+	opts.spread = randInt(constraints.spread.min, constraints.spread.max)
+	opts.speed = randInt(constraints.speed.min, constraints.speed.max)
+	opts.pulse = randInt(constraints.pulse.min, constraints.pulse.max)
+	reset()
+}
+
+function step() {
+	for (var i = 0; i < opts.count * 2; i++) {
+		var p = points[i],
+			sin = Math.sin(tick * (opts.pulse / 1000)),
+			cos = Math.cos(tick * (opts.pulse / 1000))
+		if (p.alt) {
+			p.x = p.x1 + sin * (p.x2 - p.x1) / 2
+			p.y = p.y1 + sin * (p.y2 - p.y1) / 2
+		} else {
+			p.x = p.x1 + cos * (p.x1 - p.x2) / 2
+			p.y = p.y1 + cos * (p.y1 - p.y2) / 2
+		}
+	}
+	tick++
+}
+
+function draw() {
+	ctx.save()
+
+	ctx.translate(canvas.width / 2, canvas.height / 2)
+	ctx.rotate(opts.count % 2 ? Math.PI / (opts.count * 2) : Math.PI / (opts.count * 1))
+	ctx.rotate(tick * (opts.speed / 3000))
+	ctx.beginPath()
+	for (var i = 0; i < opts.count * 2; i++) {
+		// this one liner courtesy of ana tudor
+		ctx[(i === 0) ? 'moveTo' : 'lineTo'](points[i].x, points[i].y)
+	}
+	ctx.closePath()
+
+	ctx.globalCompositeOperation = 'lighter'
+	ctx.lineWidth = 1
+	ctx.strokeStyle = 'hsla(' + (tick + 160) + ', 80%, 50%, 0.5)'
+	ctx.stroke()
+
+	ctx.globalCompositeOperation = 'destination-out'
+	ctx.lineWidth = 2
+	ctx.strokeStyle = 'hsla(0, 0%, 0%, 0.05)'
+	ctx.stroke()
+	ctx.fillStyle = 'hsla(0, 0%, 0%, 0.05)'
+	ctx.fill()
+
+	ctx.restore()
+}
+
+function render() {
+	step()
+	draw()
+	requestAnimationFrame(render)
+}
+
+init()
+
+window.addEventListener('resize', function(event) {
+	var oldWidth = canvas.width
+	var newWidth = document.documentElement.clientWidth
+	if (newWidth < 600) {
+		canvas.width = canvas.height = newWidth
+	} else if (oldWidth !== 600) {
+		canvas.width = canvas.height = 600
+	}
+})
+</script>
+
+  </body>
+</html>

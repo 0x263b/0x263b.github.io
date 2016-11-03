@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Kaleidoscope</title>
+
+    <link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+  </head>
+
+  <body class="canvas canvas_kaleidoscope canvas_kaleidoscope_index">
+    <canvas id='canvas'></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ww = window.innerWidth,
+	wh = window.innerHeight
+
+var half_PI = Math.PI / 2,
+	two_PI = Math.PI * 2,
+	ease = 0.01
+
+var img = new Image()
+img.src = '/images/kaleidoscope.jpg'
+
+var k = {
+	offsetRotation: 0,
+	offsetScale: .8,
+	offsetX: 0,
+	offsetY: 0,
+	radius: 1100,
+	slices: 16,
+	zoom: 1.5
+}
+
+canvas.width = k.radius * 2
+canvas.height = k.radius * 2
+
+function draw(){
+	var scale, step, cx
+	  
+	ctx.fillStyle = ctx.createPattern(img, 'repeat')
+	
+	scale = k.zoom * (k.radius / Math.min(img.width, img.height))
+	step = two_PI / k.slices
+	cx = img.width / 2
+	  
+	for (var i = 0; i <= k.slices; i++) {
+		ctx.save()
+		ctx.translate(k.radius, k.radius)
+		ctx.rotate(i * step)
+		ctx.beginPath()
+		ctx.moveTo(-0.5, -0.5)
+		ctx.arc(0, 0, k.radius, step * -0.51, step * 0.51)
+		ctx.rotate(half_PI)
+		ctx.scale(scale, scale)
+		ctx.scale([ -1,1 ][i % 2], 1)
+		ctx.translate(k.offsetX - cx, k.offsetY)
+		ctx.rotate(k.offsetRotation)
+		ctx.scale(k.offsetScale, k.offsetScale) 
+		ctx.fill()
+		
+		ctx.restore()
+	}
+}
+
+
+var tx = k.offsetX
+var ty = k.offsetY
+var tr = k.offsetRotation
+
+
+window.addEventListener('mousemove', mousemove, false)
+function mousemove(e){
+	var cx, cy, dx, dy, hx, hy
+	cx = ww / 2
+	cy = wh / 2
+	dx = e.pageX / ww
+	dy = e.pageY / wh
+	hx = dx - 0.1
+	hy = dy - 0.1
+	tx = hx * k.radius * -.8
+	ty = hy * k.radius * .8
+}
+
+canvas.style.position = 'fixed'
+canvas.style.marginLeft = -k.radius + 'px'
+canvas.style.marginTop = -k.radius + 'px' 
+canvas.style.left = '50%'
+canvas.style.top = '50%'
+
+function render() {
+	tr -= 0.002 
+	
+	k.offsetX += (tx - k.offsetX) * ease
+	k.offsetY += (ty - k.offsetY) * ease
+	k.offsetRotation += (tr - k.offsetRotation) * ease 
+	
+	draw()
+	
+	requestAnimationFrame(render)
+}
+
+render()
+</script>
+</body>
+
+  </body>
+</html>

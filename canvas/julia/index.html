@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Julia Fractal</title>
+
+    <link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+  </head>
+
+  <body class="canvas canvas_julia canvas_julia_index">
+    <canvas id="canvas"></canvas>
+
+<div class="controls">
+	<p>
+		<label for="ka">ka: </label>
+		<input type="range" id="ka" name="ka" 
+			min="-1" max="1" step=".01" value="0.31"
+			oninput="changeParams('ka', this.value);
+				kaLabel.value = this.value">
+		<output name="kaLabel" id="kaLabel">0.31</output>
+	</p>
+
+	<p>
+		<label for="kb">kb: </label>
+		<input type="range" id="kb" name="kb" 
+			min="-1" max="1" step=".01" value="-0.03"
+			oninput="changeParams('kb', this.value);
+				kbLabel.value = this.value">
+		<output name="kbLabel" id="kbLabel">-0.03</output>
+	</p>
+
+	<p>
+		<label>From: </label>
+		<input type="range" id="from" name="from"
+			min="-5" max="5" step=".01" value="-2"
+			oninput="changeParams('from', this.value);
+				fromLabel.value = this.value">
+		<output name="fromLabel" id="fromLabel">-2</output>
+	</p>
+
+	<p>
+		<label for="to">To: </label>
+		<input type="range" id="to" name="to"
+			min="-5" max="5" step=".01" value="2"
+			oninput="changeParams('to', this.value);
+				toLabel.value = this.value">
+		<output name="toLabel" id="toLabel">2</output>
+	</p>
+</div>
+
+<script>
+// https://www.youtube.com/watcanvas.height?v=fAsaSkmbF5s
+
+"use strict"
+
+function helper_hsl2hex(v1, v2, v3) {
+	if (v3 < 0) {
+		v3 += 1
+	}
+	if (v3 > 1) {
+		v3 -= 1
+	}
+	if (6 * v3 < 1) {
+		return v1 + (v2 - v1) * 6 * v3
+	}
+	if (2 * v3 < 1) {
+		return v2
+	}
+	if (3 * v3 < 2) {
+		return v1 + (v2 - v1) * (2 / 3 - v3) * 6
+	}
+	return v1
+}
+
+function hsl2rgb(H, S, L) {
+	var r, b, g
+	var h = H / 360
+	var s = S / 100
+	var l = L / 100
+
+	if (s == 0) {
+		r = l * 255
+		g = l * 255
+		b = l * 255
+	} else {
+		var v1, v2
+		if (l < .5) {
+			v2 = l * (1 + s)
+		} else {
+			v2 = l + s - s * l
+		}
+		v1 = 2 * l - v2
+		r = 255 * helper_hsl2hex(v1, v2, h + 1 / 3)
+		g = 255 * helper_hsl2hex(v1, v2, h)
+		b = 255 * helper_hsl2hex(v1, v2, h - 1 / 3)
+	}
+	return [r, g, b]
+}
+
+var canvas = document.getElementById("canvas")
+var ctx = canvas.getContext("2d")
+var width = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
+	canvas.width = canvas.height = width
+
+var c = {
+	x: canvas.width / 2,
+	y: canvas.height / 2
+}
+
+var rgb, R, G, B
+
+var opts = {
+	ka: 0.31,
+	kb: -0.03,
+	from: -2,
+	to: 2
+}
+
+var rad = Math.PI / 180
+var max_iterations = 50
+
+var imgData = ctx.createImageData(canvas.width, canvas.height)
+var pixels = imgData.data
+
+function JuliaSet(max_iterations, from, to) {
+	for (var x = 0; x < imgData.width; x++) {
+		for (var y = 0; y < imgData.height; y++) {
+			var i = (x + y * imgData.width) * 4
+
+			var a = map(x, 0, imgData.width, from, to)
+			var b = map(y, 0, imgData.height, from, to)
+
+			var n = 0
+
+			for (n = 0; n < max_iterations; n++) {
+				var aa = a * a - b * b
+				var bb = 2 * a * b
+
+				a = aa + opts.ka
+				b = bb + opts.kb
+
+				if (Math.abs(a + b) > 16) {
+					break
+				}
+			}
+
+			var hue = n * n * Math.cos(n * rad) % 255
+
+			rgb = hsl2rgb(180 + hue / 2, 75, 50)
+			R = rgb[0]
+			G = rgb[1]
+			B = rgb[2]
+
+			if (n === max_iterations) {
+				R = 0
+				G = 0
+				B = 0
+			}
+
+			pixels[i + 0] = R
+			pixels[i + 1] = G
+			pixels[i + 2] = B
+			pixels[i + 3] = 255
+		}
+	}
+	ctx.putImageData(imgData, 0, 0)
+}
+
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	JuliaSet(max_iterations, opts.from, opts.to)
+}
+
+function changeParams(param, value) {
+	opts[param] = parseFloat(value)
+	render()
+}
+
+function map(n, a, b, _a, _b) {
+	var d = b - a
+	var _d = _b - _a
+	var u = _d / d
+	return _a + n * u
+}
+
+render()
+
+
+window.addEventListener('resize', function(event) {
+	var oldWidth = canvas.width
+	var newWidth = document.documentElement.clientWidth
+	if (newWidth < 600) {
+		canvas.width = canvas.height = newWidth
+	} else if (oldWidth !== 600) {
+		canvas.width = canvas.height = 600
+	}
+	c.x = c.y = canvas.width / 2
+
+	imgData = ctx.createImageData(canvas.width, canvas.height)
+	pixels = imgData.data
+	render()
+})
+
+</script>
+</body>
+
+  </body>
+</html>

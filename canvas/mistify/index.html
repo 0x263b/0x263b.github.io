@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Mistify</title>
+
+    <link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+  </head>
+
+  <body class="canvas canvas_mistify canvas_mistify_index">
+    <canvas id='canvas'></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+window.onresize = function(event) {
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
+}
+
+var shapes = [],
+	speed = 7
+
+function Point() {
+	this.x = parseInt(Math.random() * canvas.width)
+	this.y = parseInt(Math.random() * canvas.height)
+	this.xVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
+	this.yVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
+}
+
+function Shape() {
+	this.color = '#' + Math.floor(Math.random() * 16777215).toString(16)
+	this.points = []
+
+	for (var i = 0; i < 4; i++) {
+		this.points.push(new Point())
+	}
+
+	this.draw = function() {
+		ctx.strokeStyle = this.color
+		ctx.beginPath()
+		ctx.moveTo(this.points[0].x, this.points[0].y)
+
+		for (var i = 1; i < this.points.length; i++) {
+			var p = this.points[i]
+
+			ctx.lineTo(p.x, p.y)
+		}
+
+		ctx.lineTo(this.points[0].x, this.points[0].y)
+		ctx.closePath()
+		ctx.stroke()
+	}
+
+	this.update = function() {
+		for (var i = 0; i < this.points.length; i++) {
+			var p = this.points[i]
+
+			p.x += p.xVel * speed
+			p.y += p.yVel * speed
+
+			if (p.x > canvas.width) p.xVel = Math.abs(p.xVel) * -1
+			if (p.x < 0) p.xVel = Math.abs(p.xVel)
+
+			if (p.y > canvas.height) p.yVel = Math.abs(p.yVel) * -1
+			if (p.y < 0) p.yVel = Math.abs(p.yVel)
+		}
+	}
+}
+
+var s = new Shape()
+var s2 = new Shape()
+
+function render() {
+	ctx.fillStyle = 'rgba(0,0,0,0.1)'
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+	s.update()
+	s.draw()
+
+	s2.update()
+	s2.draw()
+
+	requestAnimationFrame(render)
+}
+
+render()
+</script>
+
+  </body>
+</html>

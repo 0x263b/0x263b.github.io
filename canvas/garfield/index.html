@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Garfield</title>
+
+    <link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+  </head>
+
+  <body class="canvas canvas_garfield canvas_garfield_index">
+    <canvas id="canvas"></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+window.onresize = function(event) {
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
+}
+
+var a = [],
+	asize = 40
+
+var l1 = new Image(),
+	l2 = new Image(),
+	l3 = new Image(),
+	l4 = new Image(),
+	l5 = new Image(),
+	l6 = new Image()
+
+l1.src = 'http://s10.postimg.org/6i3igjpkp/WL1.png'
+l2.src = 'http://s14.postimg.org/oipfu83mp/WL2.png'
+l3.src = 'http://s14.postimg.org/xrrm4ccip/WL3.png'
+l4.src = 'http://s14.postimg.org/da6nsp0f5/WL4.png'
+l5.src = 'http://s14.postimg.org/g5jqzk4f5/WL5.png'
+l6.src = 'http://s14.postimg.org/7kqf8du8x/WL6.png'
+
+function entinit(arr) {
+	arr = {
+		posX: ctx.canvas.width / 2,
+		posY: ctx.canvas.height / 2,
+		scale: 1.1,
+		speedexp: Math.random() * 0.5 + 1.2,
+		angle: Math.random() * 2,
+		img: Math.ceil(Math.random() * 6),
+		skip: Math.ceil(Math.random() * 100)
+	}
+	arr.posX = arr.posX + Math.random() * (ctx.canvas.width / 4) * Math.cos(Math.PI * arr.angle)
+	arr.posY = arr.posY + Math.random() * (ctx.canvas.height / 4) * Math.sin(Math.PI * arr.angle)
+	return arr
+}
+
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+	for (var i = 0; i < asize; i++) {
+		if (a[i] == undefined){
+			a[i] = entinit(a[i])
+		}
+		if (a[i].skip <= 0) {
+			var curimg = null
+
+			switch (a[i].img) {
+				case 0:
+				case 1:
+					curimg = l1
+					break
+				case 2:
+					curimg = l2
+					break
+				case 3:
+					curimg = l3
+					break
+				case 4:
+					curimg = l4
+					break
+				case 5:
+					curimg = l5
+					break
+				case 6:
+					curimg = l6
+					break
+			}
+
+			a[i].scale = a[i].scale + a[i].speedexp / 4
+			a[i].speedexp = 1.03 * Math.pow(a[i].speedexp, 1.02)
+
+			if (Math.cos(Math.PI * a[i].angle) < 0) {
+				a[i].posX = a[i].posX - (Math.abs(a[i].speedexp * Math.cos(Math.PI * a[i].angle)))
+			} else {
+				a[i].posX = a[i].posX + a[i].speedexp * Math.cos(Math.PI * a[i].angle)
+			}
+
+			if (Math.sin(Math.PI * a[i].angle) < 0) {
+				a[i].posY = a[i].posY - (Math.abs(a[i].speedexp * Math.sin(Math.PI * a[i].angle)))
+			} else {
+				a[i].posY = a[i].posY + a[i].speedexp * Math.sin(Math.PI * a[i].angle)
+			}
+
+			if (a[i].posX + a[i].scale < 0 || a[i].posX - a[i].scale > ctx.canvas.width ||
+				a[i].posY + a[i].scale < 0 || a[i].posY - a[i].scale > ctx.canvas.height) {
+				a[i] = entinit(a[i])
+			}
+
+			ctx.drawImage(curimg, a[i].posX - a[i].scale / 2, a[i].posY - a[i].scale / 2, a[i].scale, a[i].scale)
+		} else {
+			a[i].skip = a[i].skip - 1
+		}
+	}
+	requestAnimationFrame(render)
+}
+
+render()
+</script>
+</body>
+
+  </body>
+</html>
