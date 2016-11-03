@@ -1,19 +1,19 @@
 <!doctype html>
 <html>
-  <head>
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
-    <meta charset="utf-8">
-    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta name="theme-color" content="#000000">
 
-    <!-- Use title if it's in the page YAML frontmatter -->
-    <title>Garfield</title>
+		<title>Garfield</title>
 
-    <link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
 
-  </head>
+	</head>
 
-  <body class="canvas canvas_garfield canvas_garfield_index">
-    <canvas id="canvas"></canvas>
+	<body class="canvas canvas_garfield canvas_garfield_index">
+		<canvas id="canvas"></canvas>
 
 <script type="text/javascript">
 'use strict'
@@ -21,12 +21,12 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = document.documentElement.clientWidth
+canvas.height = document.documentElement.clientHeight
 
 window.onresize = function(event) {
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
+	canvas.width = document.documentElement.clientWidth
+	canvas.height = document.documentElement.clientHeight
 }
 
 var a = [],
@@ -39,25 +39,25 @@ var l1 = new Image(),
 	l5 = new Image(),
 	l6 = new Image()
 
-l1.src = 'http://s10.postimg.org/6i3igjpkp/WL1.png'
-l2.src = 'http://s14.postimg.org/oipfu83mp/WL2.png'
-l3.src = 'http://s14.postimg.org/xrrm4ccip/WL3.png'
-l4.src = 'http://s14.postimg.org/da6nsp0f5/WL4.png'
-l5.src = 'http://s14.postimg.org/g5jqzk4f5/WL5.png'
-l6.src = 'http://s14.postimg.org/7kqf8du8x/WL6.png'
+l1.src = '/images/garfield/WL1.png'
+l2.src = '/images/garfield/WL2.png'
+l3.src = '/images/garfield/WL3.png'
+l4.src = '/images/garfield/WL4.png'
+l5.src = '/images/garfield/WL5.png'
+l6.src = '/images/garfield/WL6.png'
 
 function entinit(arr) {
 	arr = {
-		posX: ctx.canvas.width / 2,
-		posY: ctx.canvas.height / 2,
+		posX: canvas.width / 2,
+		posY: canvas.height / 2,
 		scale: 1.1,
 		speedexp: Math.random() * 0.5 + 1.2,
 		angle: Math.random() * 2,
 		img: Math.ceil(Math.random() * 6),
 		skip: Math.ceil(Math.random() * 100)
 	}
-	arr.posX = arr.posX + Math.random() * (ctx.canvas.width / 4) * Math.cos(Math.PI * arr.angle)
-	arr.posY = arr.posY + Math.random() * (ctx.canvas.height / 4) * Math.sin(Math.PI * arr.angle)
+	arr.posX = arr.posX + Math.random() * (canvas.width / 4) * Math.cos(Math.PI * arr.angle)
+	arr.posY = arr.posY + Math.random() * (canvas.height / 4) * Math.sin(Math.PI * arr.angle)
 	return arr
 }
 
@@ -125,5 +125,5 @@ render()
 </script>
 </body>
 
-  </body>
+	</body>
 </html>

@@ -1,19 +1,19 @@
 <!doctype html>
 <html>
-  <head>
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
-    <meta charset="utf-8">
-    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta name="theme-color" content="#000000">
 
-    <!-- Use title if it's in the page YAML frontmatter -->
-    <title>Kaleidoscope</title>
+		<title>Kaleidoscope</title>
 
-    <link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
 
-  </head>
+	</head>
 
-  <body class="canvas canvas_kaleidoscope canvas_kaleidoscope_index">
-    <canvas id='canvas'></canvas>
+	<body class="canvas canvas_kaleidoscope canvas_kaleidoscope_index">
+		<canvas id='canvas'></canvas>
 
 <script type="text/javascript">
 'use strict'
@@ -21,8 +21,8 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-var ww = window.innerWidth,
-	wh = window.innerHeight
+var ww = document.documentElement.clientWidth,
+	wh = document.documentElement.clientHeight
 
 var half_PI = Math.PI / 2,
 	two_PI = Math.PI * 2,
@@ -113,5 +113,5 @@ render()
 </script>
 </body>
 
-  </body>
+	</body>
 </html>
