@@ -32,10 +32,8 @@ canvas.style.height = height + "px"
 
 ctx.scale(ratio, ratio)
 
-function Curve(opt) {
-	opt = opt || {}
-	this.controller = opt.controller
-	this.color = opt.color
+function Curve(color) {
+	this.color = color
 	this.tick = 0
 
 	this.respawn()
@@ -49,7 +47,7 @@ Curve.prototype.respawn = function() {
 
 Curve.prototype.equation = function(i) {
 	var p = this.tick
-	var y = -1 * Math.abs(Math.sin(p)) * this.controller.amplitude * this.amplitude * this.controller.MAX * Math.pow(1 / (1 + Math.pow(this.open_class * i, 2)), 2)
+	var y = -1 * Math.abs(Math.sin(p)) * amplitude * this.amplitude * max_height * Math.pow(1 / (1 + Math.pow(this.open_class * i, 2)), 2)
 	if (Math.abs(y) < 0.001) {
 		this.respawn()
 	}
@@ -57,18 +55,18 @@ Curve.prototype.equation = function(i) {
 }
 
 Curve.prototype._draw = function(m) {
-	this.tick += this.controller.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI))
+	this.tick += speed * (1 - 0.5 * Math.sin(this.seed * Math.PI))
 
 	ctx.beginPath()
 
-	var x_base = this.controller.width / 2 + (-this.controller.width / 4 + this.seed * (this.controller.width / 2))
+	var x_base = width / 2 + (-width / 4 + this.seed * (width / 2))
 	var y_base = height / 2
 
 	var x, y, x_init
 
 	var i = -3
 	while (i <= 3) {
-		x = x_base + i * this.controller.width / 4
+		x = x_base + i * width / 4
 		y = y_base + (m * this.equation(i))
 		x_init = x_init || x
 		ctx.lineTo(x, y)
@@ -95,73 +93,43 @@ Curve.prototype.draw = function() {
 
 // -------------------
 
-function Wave(opt) {
-	opt = opt || {}
+var tick = 0,
+	wave_width = width,
+	wave_height = width / 2,
+	max_height = width / 10,
+	speed = 0.075,
+	amplitude = 1,
+	curves = new Array()
 
-	this.tick = 0
-	this.run = false
-
-	// UI vars
-
-	this.width = width 
-	this.height = width / 5
-	this.MAX = this.height / 2
-
-	this.speed = 0.075
-	this.amplitude = 1
-
-	// Create curves
-
-	this.curves = []
-	for (var i = 0; i < Wave.prototype.COLORS.length; i++) {
-		var color = Wave.prototype.COLORS[i]
-		for (var j = 0; j < (3 * Math.random()) | 0; j++) {
-			this.curves.push(new Curve({
-				controller: this,
-				color: color
-			}))
-		}
-	}
-
-	this.start()
-}
-
-Wave.prototype._clear = function() {
-	ctx.globalCompositeOperation = 'destination-out'
-	ctx.fillRect(0, 0, width, height)
-	ctx.globalCompositeOperation = 'lighter'
-}
-
-Wave.prototype._draw = function() {
-	if (this.run === false) return
-
-	this._clear()
-	for (var i = 0, len = this.curves.length; i < len; i++) {
-		this.curves[i].draw()
-	}
-
-	requestAnimationFrame(this._draw.bind(this))
-}
-
-
-Wave.prototype.start = function() {
-	this.tick = 0
-	this.run = true
-	this._draw()
-}
-
-Wave.prototype.stop = function() {
-	this.tick = 0
-	this.run = false
-}
-
-Wave.prototype.COLORS = [
+var colors = [
 	[32, 133, 252],
 	[94, 252, 169],
 	[253, 71, 103]
 ]
 
-var SW9 = new Wave()
+function draw() {
+	ctx.globalCompositeOperation = 'destination-out'
+	ctx.fillRect(0, 0, width, height)
+	ctx.globalCompositeOperation = 'lighter'
+
+	for (var i = 0, len = curves.length; i < len; i++) {
+		curves[i].draw()
+	}
+
+	requestAnimationFrame(draw)
+}
+
+function init() {
+	for (var i = 0; i < colors.length; i++) {
+		var color = colors[i]
+		for (var j = 0; j < (3 * Math.random()) | 0; j++) {
+			curves.push(new Curve(color))
+		}
+	}
+	draw()
+}
+
+init()
 
 </script>
 

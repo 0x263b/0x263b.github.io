@@ -250,7 +250,7 @@ document.addEventListener('mouseup', function(event) {
 	points = []
 })
 
-document.getElementById('mirror').addEventListener('change', function(event) {
+document.getElementById('mirror').addEventListener('input', function(event) {
 	if (this.checked) {
 		opts.mirror = true
 	} else {
@@ -258,11 +258,11 @@ document.getElementById('mirror').addEventListener('change', function(event) {
 	}
 })
 
-document.getElementById('color').addEventListener('change', function(event) {
+document.getElementById('color').addEventListener('input', function(event) {
 	opts.color = hexToRgb(this.value)
 })
 
-document.getElementById('sectors').addEventListener('change', changeSectors)
+document.getElementById('sectors').addEventListener('input', changeSectors)
 
 document.getElementById('clear').addEventListener('click', function(){
 	ctx.clearRect(0, 0, width, width)
