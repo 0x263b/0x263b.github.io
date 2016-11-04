@@ -27,7 +27,7 @@ canvas {
 label {
   display: inline-block;
   vertical-align: middle;
-  width: 70px; }
+  min-width: 70px; }
 
 output, label span {
   font-size: 14px;
@@ -97,24 +97,27 @@ output, label span {
 
 input[type=color] {
   vertical-align: middle;
-  -webkit-appearance: none;
   background: transparent;
   border: none;
   padding: 0;
   height: 30px;
   width: 56px;
   outline: none;
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-appearance: none; }
   input[type=color]::-webkit-color-swatch-wrapper {
     padding: 0; }
   input[type=color]::-webkit-color-swatch {
     border: none; }
 
+#colorLabel {
+  line-height: 30px; }
+
 #color-picker {
   display: none; }
 
 .hsl {
-  margin: 0 0 2em;
+  margin: 2em 0;
   position: relative; }
   .hsl input[type=range] {
     -webkit-appearance: none;
@@ -169,13 +172,15 @@ input[type=color] {
     background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%); }
 
 .color-output span {
+  vertical-align: middle;
   display: inline-block;
-  width: 50px;
-  height: 50px; }
+  width: 56px;
+  height: 30px; }
 
 .switch {
   position: relative;
   display: inline-block;
+  min-width: inherit;
   width: 56px;
   height: 30px; }
   .switch input {
@@ -206,7 +211,7 @@ input[type=checkbox]:checked + .check {
   background-color: MediumTurquoise; }
 
 input[type=checkbox]:focus + .check {
-  box-shadow: 0 0 1px MediumTurquoise; }
+  box-shadow: 0 0 1px red; }
 
 input[type=checkbox]:checked + .check:before {
   -webkit-transform: translateX(26px);
@@ -220,7 +225,7 @@ button {
   padding: 0.5em 1em;
   border: none;
   border-radius: 3px;
-  margin-right: 1em;
+  margin: 0.5em 0.5em 0.5em 0;
   cursor: pointer; }
 
 .canvas_mandala main {

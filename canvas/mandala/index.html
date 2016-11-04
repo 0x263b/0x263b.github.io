@@ -34,15 +34,18 @@
 	</div>
 	<div class="slider" id="input-color">
 		<label for="color">Color</label>
-		<input type="color" id="color" name="color" value="#ffffff">
+		<input type="color" id="color" name="color" value="#ffffff"
+			oninput="colorLabel.value = this.value">
+		<output name="colorLabel" id="colorLabel">#ffffff</output>
 	</div>
 	<div id="color-picker">
 		<div class="color-output">
+			<label for="color">Color</label>
 			<span></span>
 		</div>
 		<div class="hsl">
 			<label for="hue">Hue: <span id="hue-value"></span></label>
-			<input id="hue" type="range" min="0" max="360" step="1" value="180">
+			<input id="hue" type="range" min="0" max="360" step="1" value="120">
 		</div>
 		<div class="hsl">
 			<label for="sat">Saturation: <span id="sat-value"></span></label>
@@ -50,7 +53,7 @@
 		</div>
 		<div class="hsl">
 			<label for="lit">Lightness: <span id="lit-value"></span></label>
-			<input id="lit" type="range" min="0" max="100" step="1" value="50">
+			<input id="lit" type="range" min="0" max="100" step="1" value="75">
 		</div>
 		<div class="hsl">
 			<label for="opa">Opacity: <span id="opa-value"></span></label>
@@ -336,9 +339,9 @@ window.addEventListener('resize', function(event) {
 })
 
 var hsl = {
-	h: 180,
+	h: 120,
 	s: 100,
-	l: 50,
+	l: 75,
 	a: 1.0
 }
 
