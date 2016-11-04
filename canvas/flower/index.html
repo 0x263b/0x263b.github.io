@@ -68,6 +68,9 @@ var canvas = document.getElementById('canvas'),
 
 canvas.width = canvas.height = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
 
+ratio = window.devicePixelRatio
+ctx.scale(ratio, ratio)
+
 var opts,
 	constraints,
 	points,
