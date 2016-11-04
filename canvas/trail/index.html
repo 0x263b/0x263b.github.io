@@ -30,8 +30,8 @@ window.onresize = function(event) {
 }
 
 var goal,
-	followers = [],
-	count = 400,
+	followers = new Array(),
+	count = 250,
 	t = 0
 
 function rand(min, max) {
@@ -133,11 +133,7 @@ function render() {
 	goal.step()
 	goal.step()
 
-	ctx.fillStyle = 'rgba(0, 0, 0, 0.001)'
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
-	ctx.save()
-
-	ctx.globalCompositeOperation = "screen"
+	ctx.globalCompositeOperation = 'screen'
 	ctx.beginPath()
 	ctx.moveTo(followers[0].x, followers[0].y)
 	followers.forEach(function(follower, i) {
@@ -146,10 +142,9 @@ function render() {
 			ctx.lineTo(follower.x, follower.y)
 		}
 	})
-	ctx.lineWidth = 1.1
-	ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.75)`
+	ctx.lineWidth = 1
+	ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.6)`
 	ctx.stroke()
-	ctx.restore()
 
 	t += 0.0016
 
@@ -157,7 +152,15 @@ function render() {
 }
 
 function init() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	goal = new Goal()
+
+	for (var i = 0; i < count; i++) {
+		var leader = (i == 0) ? goal : followers[i - 1],
+			r = 1 + ((count - i) / count) * 10,
+			d = (i == 0) ? 0.05 : 0.4
+		followers.push(new Follower(leader, r, d))
+	}
+
 	goal.x = canvas.width / 2
 	goal.y = canvas.height + 10
 	followers.forEach(function(follower, i) {
@@ -167,16 +170,13 @@ function init() {
 	render()
 }
 
-goal = new Goal()
-
-for (var i = 0; i < count; i++) {
-	var leader = (i == 0) ? goal : followers[i - 1],
-		r = 1 + ((count - i) / count) * 10,
-		d = (i == 0) ? 0.05 : 0.4
-	followers.push(new Follower(leader, r, d))
-}
-
 init()
+
+setInterval(function(){
+	ctx.fillStyle = '#000'
+	ctx.globalCompositeOperation = 'source-over'
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+}, 25000)
 </script>
 </body>
 </html>
