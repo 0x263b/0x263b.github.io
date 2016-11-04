@@ -61,6 +61,7 @@
 	<div class="slider">
 		<button id="undo" name="undo">Undo</button>
 		<button id="clear" name="clear">Clear</button>
+		<button id="download" name="download">Download</button>
 	</div>
 </div>
 
@@ -209,6 +210,29 @@ function undo_draw() {
 	}
 }
 
+function download_image() {
+	var downCanvas = document.createElement('canvas')
+	var downCtx = downCanvas.getContext('2d')
+
+	downCanvas.width = downCanvas.height = width * ratio
+	downCtx.fillStyle = 'black'
+	downCtx.fillRect(0, 0, downCanvas.width, downCanvas.height)
+
+	var dataURL = canvas.toDataURL()
+	var img = new Image
+	img.src = dataURL
+	img.onload = function() {
+		downCtx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+		var a = document.createElement('a')
+		a.href = downCanvas.toDataURL()
+		a.download = 'mandala.png'
+		document.body.appendChild(a)
+		a.click()
+		document.body.removeChild(a)
+	}
+}
+
 canvas.addEventListener('mousedown', function(event) {
 	var x = Math.ceil(event.clientX - main.offsetLeft + document.body.scrollLeft)
 	var y = Math.ceil(event.clientY - main.offsetTop + document.body.scrollTop)
@@ -291,6 +315,8 @@ document.getElementById('clear').addEventListener('click', function(){
 })
 
 document.getElementById('undo').addEventListener('click', undo_draw)
+
+document.getElementById('download').addEventListener('click', download_image)
 
 window.addEventListener('resize', function(event) {
 	var newWidth = window.innerWidth
