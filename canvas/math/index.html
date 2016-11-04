@@ -77,7 +77,7 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = canvas.height = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
+canvas.width = canvas.height = 600 < window.innerWidth ? 600 : window.innerWidth
 
 var ratio = window.devicePixelRatio
 ctx.scale(ratio, ratio)
@@ -197,7 +197,7 @@ render()
 
 window.addEventListener('resize', function(event) {
 	var oldWidth = canvas.width
-	var newWidth = document.documentElement.clientWidth
+	var newWidth = window.innerWidth
 	if (newWidth < 600) {
 		canvas.width = canvas.height = newWidth
 	} else if (oldWidth !== 600) {

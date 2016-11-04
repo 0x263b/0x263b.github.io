@@ -21,8 +21,8 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-var ww = document.documentElement.clientWidth,
-	wh = document.documentElement.clientHeight
+var ww = window.innerWidth,
+	wh = window.innerHeight
 
 var ratio = window.devicePixelRatio
 ctx.scale(ratio, ratio)

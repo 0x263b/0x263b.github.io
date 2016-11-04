@@ -21,15 +21,15 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = document.documentElement.clientWidth
-canvas.height = document.documentElement.clientHeight
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
 
 var ratio = window.devicePixelRatio
 ctx.scale(ratio, ratio)
 
 window.onresize = function(event) {
-	canvas.width = document.documentElement.clientWidth
-	canvas.height = document.documentElement.clientHeight
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
 }
 
 var goal,

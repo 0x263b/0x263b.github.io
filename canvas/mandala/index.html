@@ -48,7 +48,7 @@ var main = document.getElementById('main'),
 	background = document.getElementById('background'),
 	bgctx = background.getContext('2d')
 
-var width = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
+var width = 600 < window.innerWidth ? 600 : window.innerWidth
 	canvas.width = canvas.height = background.width = background.height = width
 
 var ratio = window.devicePixelRatio
@@ -188,7 +188,7 @@ document.getElementById('clear').addEventListener('click', function(){
 
 window.addEventListener('resize', function(event) {
 	var oldWidth = canvas.width
-	var newWidth = document.documentElement.clientWidth
+	var newWidth = window.innerWidth
 	if (newWidth < 600) {
 		canvas.width = canvas.height = background.width = background.height = newWidth
 		changeSectors()

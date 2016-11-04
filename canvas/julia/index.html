@@ -104,7 +104,7 @@ function hsl2rgb(H, S, L) {
 
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
-var width = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
+var width = 600 < window.innerWidth ? 600 : window.innerWidth
 	canvas.width = canvas.height = width
 
 var ratio = window.devicePixelRatio
@@ -195,7 +195,7 @@ render()
 
 window.addEventListener('resize', function(event) {
 	var oldWidth = canvas.width
-	var newWidth = document.documentElement.clientWidth
+	var newWidth = window.innerWidth
 	if (newWidth < 600) {
 		canvas.width = canvas.height = newWidth
 	} else if (oldWidth !== 600) {
