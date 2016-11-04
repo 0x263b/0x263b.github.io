@@ -306,6 +306,90 @@ window.addEventListener('resize', function(event) {
 	changeSectors()
 })
 
+var hsl = {
+	h: 180,
+	s: 100,
+	l: 50,
+	a: 1.0
+}
+
+function $(selector) {
+	return document.querySelector(selector)
+}
+
+function toRGB(h, s, l) {
+	var r, g, b;
+	h /= 360
+	s /= 100
+	l /= 100
+
+	if (s === 0) {
+		r = g = b = l; // achromatic
+	} else {
+		var hue2rgb = function hue2rgb(p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		}
+
+		var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		var p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+function calculateColor() {
+	var color = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${hsl.a})`
+	$(".color-output span").style.backgroundColor = color
+	var rgb = toRGB(hsl.h, hsl.s, hsl.l, hsl.a)
+	opts.color = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${hsl.a})`
+
+	calculateGradients()
+}
+
+function calculateGradients() {
+	$("#sat").style.background = `linear-gradient(to right, hsla(${hsl.h},0%,${hsl.l}%,${hsl.a}) 0%, hsla(${hsl.h},100%,${hsl.l}%,${hsl.a}) 100%)`
+	$("#lit").style.background = `linear-gradient(to right, hsla(${hsl.h},${hsl.s}%,0%,${hsl.a}) 0%, hsla(${hsl.h},${hsl.s}%,50%,${hsl.a}) 50%, hsla(${hsl.h},${hsl.s}%,100%,${hsl.a}) 100%)`
+	$("#opa").style.background = `linear-gradient(to right, hsla(${hsl.h},${hsl.s}%,${hsl.l}%,0) 0%, hsla(${hsl.h},${hsl.s}%,${hsl.l}%,1.0) 100%)`
+	
+	updateLabels()
+}
+
+function updateLabels() {
+	$("#hue-value").textContent = hsl.h + '°'
+	$("#sat-value").textContent = hsl.s + '%'
+	$("#lit-value").textContent = hsl.l + '%'
+	$("#opa-value").textContent = (hsl.a * 100) + '%'
+}
+
+$("#hue").addEventListener("input", function(event) {
+	hsl.h = this.value
+	calculateColor()
+})
+
+$("#sat").addEventListener("input", function(event) {
+	hsl.s = this.value
+	calculateColor()
+})
+
+$("#lit").addEventListener("input", function(event) {
+	hsl.l = this.value
+	calculateColor()
+})
+
+$("#opa").addEventListener("input", function(event) {
+	hsl.a = this.value / 100
+	calculateColor()
+})
+
+
 function supportsColor() {
 	var test = document.createElement('input')
 		test.type = 'color'
@@ -316,91 +400,7 @@ function supportsColor() {
 if (!supportsColor()) {
 	document.getElementById('color-picker').style.display = 'block'
 	document.getElementById('input-color').style.display = 'none'
-}
-
-var hsl = {
-    h: 180,
-    s: 100,
-    l: 50,
-    a: 1.0
-}
-
-var $ = function(selector) {
-    return document.querySelector(selector)
-}
-
-var calculateColor = function() {
-    var color = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${hsl.a})`
-    $(".color-output span").style.backgroundColor = color
-    var rgb = toRGB(hsl.h, hsl.s, hsl.l, hsl.a)
-    opts.color = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${hsl.a})`
-
-    calculateGradients()
-}
-
-var calculateGradients = function() {
-    $("#sat").style.background = `linear-gradient(to right, hsla(${hsl.h},0%,${hsl.l}%,${hsl.a}) 0%, hsla(${hsl.h},100%,${hsl.l}%,${hsl.a}) 100%)`
-    $("#lit").style.background = `linear-gradient(to right, hsla(${hsl.h},${hsl.s}%,0%,${hsl.a}) 0%, hsla(${hsl.h},${hsl.s}%,50%,${hsl.a}) 50%, hsla(${hsl.h},${hsl.s}%,100%,${hsl.a}) 100%)`
-    $("#opa").style.background = `linear-gradient(to right, hsla(${hsl.h},${hsl.s}%,${hsl.l}%,0) 0%, hsla(${hsl.h},${hsl.s}%,${hsl.l}%,1.0) 100%)`
-	
-	updateLabels()
-}
-
-var updateLabels = function() {
-    $("#hue-value").textContent = hsl.h + '°'
-    $("#sat-value").textContent = hsl.s + '%'
-    $("#lit-value").textContent = hsl.l + '%'
-    $("#opa-value").textContent = (hsl.a * 100) + '%'
-}
-
-$("#hue").addEventListener("input", function(event) {
-    hsl.h = this.value
-    calculateColor()
-})
-
-$("#sat").addEventListener("input", function(event) {
-    hsl.s = this.value
-    calculateColor()
-})
-
-$("#lit").addEventListener("input", function(event) {
-    hsl.l = this.value
-    calculateColor()
-})
-
-$("#opa").addEventListener("input", function(event) {
-    hsl.a = this.value / 100
-    calculateColor()
-})
-
-calculateColor()
-
-function toRGB(h, s, l) {
-    var r, g, b;
-    h /= 360
-    s /= 100
-    l /= 100
-
-    if (s === 0) {
-        r = g = b = l; // achromatic
-    } else {
-        var hue2rgb = function hue2rgb(p, q, t) {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1 / 6) return p + (q - p) * 6 * t;
-            if (t < 1 / 2) return q;
-            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-            return p;
-        }
-
-        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1 / 3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1 / 3);
-    }
-
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	calculateColor()
 }
 
 </script>

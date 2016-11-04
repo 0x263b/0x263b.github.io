@@ -156,6 +156,16 @@ output, label span {
   width: 50px;
   height: 50px; }
 
+button {
+  font: normal 16px/21px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;
+  background-color: #333;
+  color: #fff;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 3px;
+  margin-right: 1em;
+  cursor: pointer; }
+
 .canvas_mandala main {
   max-width: 600px;
   margin: auto;
