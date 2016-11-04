@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Waves</title>
@@ -21,10 +21,15 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
 var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
 ctx.scale(ratio, ratio)
 
 function Spline() {
@@ -168,10 +173,10 @@ function render() {
 
 	// Slowly erase
 	ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.fillRect(0, 0, width, height)
 	ctx.save()
 	ctx.lineWidth = 0.5
-	ctx.translate(0, canvas.height / 2)
+	ctx.translate(0, height / 2)
 	ctx.globalCompositeOperation = "lighter"
 	for (i = 0; i < points.length; i++) {
 		position = spline.get2DPoint(points, i / pointCount)
@@ -213,7 +218,7 @@ var points = []
 var pointCount = 100
 for (var i = 0; i <= pointCount; i++) {
 	points[i] = {
-		x: (i / pointCount) * (canvas.width + 200),
+		x: (i / pointCount) * (width + 200),
 		y: 100
 	}
 	points[i].o = {
@@ -225,12 +230,20 @@ for (var i = 0; i <= pointCount; i++) {
 render()
 
 window.onresize = function(event) {
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+	
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
 
 	for (var i = 0; i <= pointCount; i++) {
 		points[i] = {
-			x: (i / pointCount) * (canvas.width + 200),
+			x: (i / pointCount) * (width + 200),
 			y: 100
 		}
 		points[i].o = {

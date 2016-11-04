@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Math</title>
@@ -77,9 +77,11 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = canvas.height = 600 < window.innerWidth ? 600 : window.innerWidth
-
 var ratio = window.devicePixelRatio
+var width = 600 < window.innerWidth ? 600 : window.innerWidth
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + "px"
 ctx.scale(ratio, ratio)
 
 var dt = 0
@@ -184,7 +186,7 @@ function render() {
 		// position relative to canvas size
 		// i : opts.amount = pos : width -> pos = i * width/opts.amount
 		//ctx.fillRect(i, 250+inc, opts.size, opts.size)
-		ctx.fillRect((i * canvas.width / opts.amount), (canvas.height/2) + inc, opts.size, opts.size)
+		ctx.fillRect((i * width / opts.amount), (width/2) + inc, opts.size, opts.size)
 	}
 	// resetting color index
 	color_index = 0
@@ -196,12 +198,18 @@ function render() {
 render()
 
 window.addEventListener('resize', function(event) {
-	var oldWidth = canvas.width
 	var newWidth = window.innerWidth
+	if (newWidth === width) return
 	if (newWidth < 600) {
-		canvas.width = canvas.height = newWidth
-	} else if (oldWidth !== 600) {
-		canvas.width = canvas.height = 600
+		width = newWidth
+		canvas.width = canvas.height = width * ratio
+		canvas.style.width = canvas.style.height = width + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600) {
+		width = newWidth
+		canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
 	}
 })
 

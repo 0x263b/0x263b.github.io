@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Mandala</title>
@@ -48,10 +48,11 @@ var main = document.getElementById('main'),
 	background = document.getElementById('background'),
 	bgctx = background.getContext('2d')
 
-var width = 600 < window.innerWidth ? 600 : window.innerWidth
-	canvas.width = canvas.height = background.width = background.height = width
-
 var ratio = window.devicePixelRatio
+var width = 600 < window.innerWidth ? 600 : window.innerWidth
+
+canvas.width = canvas.height = background.width = background.height = width * ratio
+canvas.style.width = canvas.style.height = background.style.width = background.style.height = width + "px"
 ctx.scale(ratio, ratio)
 
 var opts = {
@@ -187,15 +188,20 @@ document.getElementById('clear').addEventListener('click', function(){
 })
 
 window.addEventListener('resize', function(event) {
-	var oldWidth = canvas.width
 	var newWidth = window.innerWidth
+	if (newWidth === width) return
 	if (newWidth < 600) {
-		canvas.width = canvas.height = background.width = background.height = newWidth
-		changeSectors()
-	} else if (oldWidth !== 600) {
-		canvas.width = canvas.height = background.width = background.height = 600
-		changeSectors()
+		width = newWidth
+		canvas.width = canvas.height = background.width = background.height = newWidth * ratio
+		canvas.style.width = canvas.style.height = background.style.width = background.style.height = newWidth + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600) {
+		width = newWidth
+		canvas.width = canvas.height = background.width = background.height = 600 * ratio
+		canvas.style.width = canvas.style.height = background.style.width = background.style.height = '600px'
+		ctx.scale(ratio, ratio)
 	}
+	changeSectors()
 })
 
 </script>

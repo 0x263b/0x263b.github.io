@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Mistify</title>
@@ -21,23 +21,36 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
 var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
 ctx.scale(ratio, ratio)
 
 window.onresize = function(event) {
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
 }
 
 var shapes = [],
 	speed = 7
 
 function Point() {
-	this.x = parseInt(Math.random() * canvas.width)
-	this.y = parseInt(Math.random() * canvas.height)
+	this.x = parseInt(Math.random() * width)
+	this.y = parseInt(Math.random() * height)
 	this.xVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
 	this.yVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
 }
@@ -73,10 +86,10 @@ function Shape() {
 			p.x += p.xVel * speed
 			p.y += p.yVel * speed
 
-			if (p.x > canvas.width) p.xVel = Math.abs(p.xVel) * -1
+			if (p.x > width) p.xVel = Math.abs(p.xVel) * -1
 			if (p.x < 0) p.xVel = Math.abs(p.xVel)
 
-			if (p.y > canvas.height) p.yVel = Math.abs(p.yVel) * -1
+			if (p.y > height) p.yVel = Math.abs(p.yVel) * -1
 			if (p.y < 0) p.yVel = Math.abs(p.yVel)
 		}
 	}
@@ -87,7 +100,7 @@ var s2 = new Shape()
 
 function render() {
 	ctx.fillStyle = 'rgba(0,0,0,0.1)'
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.fillRect(0, 0, width, height)
 
 	s.update()
 	s.draw()

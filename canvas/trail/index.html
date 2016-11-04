@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Trail</title>
@@ -21,15 +21,28 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
 var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
 ctx.scale(ratio, ratio)
 
 window.onresize = function(event) {
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
 }
 
 var goal,
@@ -70,8 +83,8 @@ function toRGB(h, s, l) {
 }
 
 function Goal() {
-	this.x = canvas.width / 2
-	this.y = canvas.height + 10
+	this.x = width / 2
+	this.y = height + 10
 	this.ax = 0
 	this.ay = 0
 	this.vx = 0
@@ -90,22 +103,22 @@ Goal.prototype.step = function() {
 	this.vy *= Math.abs(this.vy) > 5 ? 0.75 : 1
 	this.x += this.vx
 	this.y += this.vy
-	if (this.x + this.r >= canvas.width || this.x <= this.r) {
+	if (this.x + this.r >= width || this.x <= this.r) {
 		this.vx = 0
 		this.ax = 0
 	}
-	if (this.y + this.r >= canvas.height || this.y <= this.r) {
+	if (this.y + this.r >= height || this.y <= this.r) {
 		this.vy = 0
 		this.ay = 0
 	}
-	if (this.x + this.r >= canvas.width) {
-		this.x = canvas.width - this.r
+	if (this.x + this.r >= width) {
+		this.x = width - this.r
 	}
 	if (this.x <= this.r) {
 		this.x = this.r
 	}
-	if (this.y + this.r >= canvas.height) {
-		this.y = canvas.height - this.r
+	if (this.y + this.r >= height) {
+		this.y = height - this.r
 	}
 	if (this.y <= this.r) {
 		this.y = this.r
@@ -113,8 +126,8 @@ Goal.prototype.step = function() {
 }
 
 function Follower(leader, r, d) {
-	this.x = canvas.width / 2
-	this.y = canvas.height / 2
+	this.x = width / 2
+	this.y = height / 2
 	this.vx = 0
 	this.vy = 0
 	this.r = r
@@ -164,11 +177,11 @@ function init() {
 		followers.push(new Follower(leader, r, d))
 	}
 
-	goal.x = canvas.width / 2
-	goal.y = canvas.height + 10
+	goal.x = width / 2
+	goal.y = height + 10
 	followers.forEach(function(follower, i) {
-		follower.x = canvas.width / 2
-		follower.y = canvas.height + 10
+		follower.x = width / 2
+		follower.y = height + 10
 	})
 	render()
 }
@@ -178,7 +191,7 @@ init()
 setInterval(function(){
 	ctx.fillStyle = '#000'
 	ctx.globalCompositeOperation = 'source-over'
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.fillRect(0, 0, width, height)
 }, 25000)
 </script>
 </body>

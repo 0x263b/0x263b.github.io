@@ -3,7 +3,7 @@
 	<head>
 		<meta content="IE=edge" http-equiv="X-UA-Compatible">
 		<meta charset="utf-8">
-		<meta content="width=device-width,initial-scale=1.0" name="viewport">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
 		<title>Flying Windows</title>
@@ -21,15 +21,28 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
 var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
 ctx.scale(ratio, ratio)
 
 window.onresize = function(event) {
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
 }
 
 var a = [],
@@ -51,21 +64,21 @@ l6.src = '/images/flying_windows/WL6.png'
 
 function entinit(arr) {
 	arr = {
-		posX: canvas.width / 2,
-		posY: canvas.height / 2,
+		posX: width / 2,
+		posY: height / 2,
 		scale: 1.1,
 		speedexp: Math.random() * 0.5 + 1.2,
 		angle: Math.random() * 2,
 		img: Math.ceil(Math.random() * 6),
 		skip: Math.ceil(Math.random() * 100)
 	}
-	arr.posX = arr.posX + Math.random() * (canvas.width / 4) * Math.cos(Math.PI * arr.angle)
-	arr.posY = arr.posY + Math.random() * (canvas.height / 4) * Math.sin(Math.PI * arr.angle)
+	arr.posX = arr.posX + Math.random() * (width / 4) * Math.cos(Math.PI * arr.angle)
+	arr.posY = arr.posY + Math.random() * (height / 4) * Math.sin(Math.PI * arr.angle)
 	return arr
 }
 
 function render() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.clearRect(0, 0, width, height)
 
 	for (var i = 0; i < asize; i++) {
 		if (a[i] == undefined){
@@ -111,8 +124,8 @@ function render() {
 				a[i].posY = a[i].posY + a[i].speedexp * Math.sin(Math.PI * a[i].angle)
 			}
 
-			if (a[i].posX + a[i].scale < 0 || a[i].posX - a[i].scale > ctx.canvas.width ||
-				a[i].posY + a[i].scale < 0 || a[i].posY - a[i].scale > ctx.canvas.height) {
+			if (a[i].posX + a[i].scale < 0 || a[i].posX - a[i].scale > width ||
+				a[i].posY + a[i].scale < 0 || a[i].posY - a[i].scale > height) {
 				a[i] = entinit(a[i])
 			}
 
