@@ -235,8 +235,6 @@ canvas.addEventListener('touchstart', function(e) {
 	e.preventDefault()
 	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
 	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
-		x += document.body.scrollLeft
-		y += document.body.scrollTop
 
 	this.drawing = true
 	startingX = x
@@ -247,8 +245,6 @@ canvas.addEventListener('touchmove', function(e) {
 	e.preventDefault()
 	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
 	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
-		x += document.body.scrollLeft
-		y += document.body.scrollTop
 
 	points.push({
 		x: x,
