@@ -195,7 +195,7 @@ function render() {
 		} else {}
 
 		var rgb = toRGB((t * 360 * 5) % 360, 65, 50)
-		ctx.strokeStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+		ctx.strokeStyle = 'rgb(' + rgb.join(',') + ')'
 		ctx.stroke()
 		ctx.closePath()
 		previousMidpoint = midpoint

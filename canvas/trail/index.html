@@ -48,7 +48,8 @@ window.onresize = function(event) {
 var goal,
 	followers = new Array(),
 	count = 250,
-	t = 0
+	t = 0,
+	f = 0
 
 function rand(min, max) {
 	return Math.random() * (max - min) + min
@@ -149,6 +150,12 @@ function render() {
 	goal.step()
 	goal.step()
 
+	if (f % 7 === 0) {
+		ctx.fillStyle = 'rgba(0,0,0,0.05)'
+		ctx.globalCompositeOperation = 'destination-out'
+		ctx.fillRect(0, 0, width, height)
+	}
+
 	ctx.globalCompositeOperation = 'screen'
 	ctx.beginPath()
 	ctx.moveTo(followers[0].x, followers[0].y)
@@ -159,10 +166,11 @@ function render() {
 		}
 	})
 	ctx.lineWidth = 1
-	ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.6)`
+	ctx.strokeStyle = 'rgba(' + rgb.join(',') + ',0.6)'
 	ctx.stroke()
 
 	t += 0.0016
+	f += 1
 
 	requestAnimationFrame(render)
 }
@@ -187,12 +195,6 @@ function init() {
 }
 
 init()
-
-setInterval(function(){
-	ctx.fillStyle = '#000'
-	ctx.globalCompositeOperation = 'source-over'
-	ctx.fillRect(0, 0, width, height)
-}, 25000)
 </script>
 </body>
 </html>

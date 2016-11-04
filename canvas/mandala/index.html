@@ -37,10 +37,23 @@
 		<label for="clear">Clear canvas</label>
 		<button id="clear" name="clear">Clear</button>
 	</p>
+	<p>
+		<label for="undo">Undo</label>
+		<button id="undo" name="undo">Undo</button>
+	</p>
 </div>
 
 <script type="text/javascript">
 'use strict'
+
+Storage.prototype.setObject = function(key, value) {
+	this.setItem(key, JSON.stringify(value))
+}
+
+Storage.prototype.getObject = function(key) {
+	var value = this.getItem(key)
+	return value && JSON.parse(value)
+}
 
 var main = document.getElementById('main'),
 	canvas = document.getElementById('canvas'),
@@ -59,7 +72,7 @@ var opts = {
 	sectors: 16,
 	angle: (360 / 16) * (Math.PI / 180),
 	mirror: true,
-	color: '#ffffff'
+	color: 'rgba(255,255,255,0.1)'
 }
 
 var points = []
@@ -96,57 +109,88 @@ function changeSectors(event) {
 
 changeSectors()
 
-function hexToRgb(hex) {
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-	return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, 0.1)`
-}
-
 function draw() {
 	ctx.lineWidth = 0.5
 	ctx.lineJoin = ctx.lineCap = 'round'
-	ctx.strokeStyle = hexToRgb(opts.color)
-	ctx.shadowBlur = 0.5
-	ctx.shadowColor = opts.color
+	ctx.strokeStyle = opts.color
 
 	for (var i = 0; i < opts.sectors; i++) {
-		// rotate
-		ctx.translate(width/2, width/2)
-		ctx.rotate(opts.angle)
-		ctx.translate(-width/2, -width/2)
+		for (var j = 5; j < points.length; j += 5) {
+			var from = rotate(points[j - 5].x, points[j - 5].y, i)
+			var to = rotate(points[j].x, points[j].y, i)
 
-		for (var j = 1; j < points.length; j++) {
 			ctx.beginPath()
-			ctx.quadraticCurveTo(points[j - 1].x, points[j - 1].y, points[j].x, points[j].y)
-			//ctx.moveTo(points[j - 1].x, points[j - 1].y)
-			//ctx.lineTo(points[j].x, points[j].y)
+			ctx.quadraticCurveTo(from.x, from.y, to.x, to.y)
 			ctx.stroke()
 		}
 	}
 
 	if (opts.mirror) {
 		for (var i = 0; i < opts.sectors; i++) {
-			// rotate
-			ctx.translate(width/2, width/2)
-			ctx.rotate(opts.angle)
-			ctx.translate(-width/2, -width/2)
+			for (var j = 5; j < points.length; j += 5) {
+				var from = rotate(points[j - 5].x, points[j - 5].y, i)
+				var to = rotate(points[j].x, points[j].y, i)
 
-			for (var j = 1; j < points.length; j++) {
-				var x1 = Math.abs(points[j - 1].x - width),
-					x2 = Math.abs(points[j].x - width)
+					from.x = Math.abs(from.x - width)
+					to.x = Math.abs(to.x - width)
 
 				ctx.beginPath()
-				ctx.quadraticCurveTo(x1, points[j - 1].y, x2, points[j].y)
-				//ctx.moveTo(x1, points[j - 1].y)
-				//ctx.lineTo(x2, points[j].y)
+				ctx.quadraticCurveTo(from.x, from.y, to.x, to.y)
 				ctx.stroke()
 			}
 		}
 	}
 }
 
+function hexToRgb(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+	return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, 0.1)`
+}
+
+function rotate(x, y, angle) {
+	var cos = Math.cos,
+		sin = Math.sin
+
+	var radians = (Math.PI / 180) * ((360 /opts.sectors) * angle)
+
+	var xr = (x - centerX) * cos(radians) - (y - centerY) * sin(radians) + centerX
+	var yr = (x - centerX) * sin(radians) + (y - centerY) * cos(radians) + centerY
+
+	return {
+		x: xr, 
+		y: yr
+	}
+}
+
+if (localStorage.getItem("my_drawing") !== null) {
+	var dataURL = localStorage.getItem("my_drawing")
+	var img = new Image
+	img.src = dataURL
+	img.onload = function() {
+		ctx.drawImage(img, 0, 0, width, width)
+	}
+}
+
+var drawing_history = new Array()
+function save_drawing_history() {
+	drawing_history.push(ctx.getImageData(0, 0, canvas.width, canvas.height))
+	if (drawing_history.length > 10) {
+		drawing_history.shift(0)
+	}
+}
+
+function undo_draw() {
+	if (drawing_history.length > 1) {
+		drawing_history.pop()
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		ctx.putImageData(drawing_history[drawing_history.length - 1], 0, 0)
+			console.log('fired')
+	}
+}
+
 canvas.addEventListener('mousedown', function(event) {
-	var x = event.clientX - main.offsetLeft
-	var y = event.clientY - main.offsetTop
+	var x = Math.ceil(event.clientX - main.offsetLeft)
+	var y = Math.ceil(event.clientY - main.offsetTop)
 
 	this.drawing = true
 	startingX = x
@@ -154,8 +198,8 @@ canvas.addEventListener('mousedown', function(event) {
 })
 
 canvas.addEventListener('mousemove', function(event) {
-	var x = event.clientX - main.offsetLeft
-	var y = event.clientY - main.offsetTop
+	var x = Math.ceil(event.clientX - main.offsetLeft)
+	var y = Math.ceil(event.clientY - main.offsetTop)
 
 	if (this.drawing) {
 		points.push({
@@ -168,8 +212,8 @@ canvas.addEventListener('mousemove', function(event) {
 
 canvas.addEventListener('touchstart', function(e) {
 	e.preventDefault()
-	var x = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
-	var y = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
+	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
 
 	this.drawing = true
 	startingX = x
@@ -178,8 +222,8 @@ canvas.addEventListener('touchstart', function(e) {
 
 canvas.addEventListener('touchmove', function(e) {
 	e.preventDefault()
-	var x = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
-	var y = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
+	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
 
 	points.push({
 		x: x,
@@ -189,11 +233,19 @@ canvas.addEventListener('touchmove', function(e) {
 })
 
 document.addEventListener('touchend', function(event) {
+	if (event.target == canvas) {
+		save_drawing_history()
+		localStorage.setItem("my_drawing", canvas.toDataURL())
+	}
 	canvas.drawing = false
 	points = []
 })
 
 document.addEventListener('mouseup', function(event) {
+	if (event.target == canvas) {
+		save_drawing_history()
+		localStorage.setItem("my_drawing", canvas.toDataURL())
+	}
 	canvas.drawing = false
 	points = []
 })
@@ -207,14 +259,17 @@ document.getElementById('mirror').addEventListener('change', function(event) {
 })
 
 document.getElementById('color').addEventListener('change', function(event) {
-	opts.color = this.value
+	opts.color = hexToRgb(this.value)
 })
 
 document.getElementById('sectors').addEventListener('change', changeSectors)
 
 document.getElementById('clear').addEventListener('click', function(){
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.clearRect(0, 0, width, width)
+	save_drawing_history()
 })
+
+document.getElementById('undo').addEventListener('click', undo_draw)
 
 window.addEventListener('resize', function(event) {
 	var newWidth = window.innerWidth
@@ -234,7 +289,6 @@ window.addEventListener('resize', function(event) {
 })
 
 </script>
-</body>
 
 	</body>
 </html>
