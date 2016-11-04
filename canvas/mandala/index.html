@@ -51,7 +51,7 @@ var main = document.getElementById('main'),
 var width = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
 	canvas.width = canvas.height = background.width = background.height = width
 
-ratio = window.devicePixelRatio
+var ratio = window.devicePixelRatio
 ctx.scale(ratio, ratio)
 
 var opts = {

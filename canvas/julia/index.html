@@ -107,7 +107,7 @@ var ctx = canvas.getContext("2d")
 var width = 600 < document.documentElement.clientWidth ? 600 : document.documentElement.clientWidth
 	canvas.width = canvas.height = width
 
-ratio = window.devicePixelRatio
+var ratio = window.devicePixelRatio
 ctx.scale(ratio, ratio)
 
 var c = {
