@@ -25,7 +25,9 @@ canvas {
   padding: 1em; }
 
 label {
-  display: block; }
+  display: inline-block;
+  vertical-align: middle;
+  width: 70px; }
 
 output, label span {
   font-size: 14px;
@@ -93,6 +95,21 @@ output, label span {
   .slider input[type=range]::-ms-fill-upper {
     background-color: #000; }
 
+input[type=color] {
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  height: 30px;
+  width: 56px;
+  outline: none;
+  cursor: pointer; }
+  input[type=color]::-webkit-color-swatch-wrapper {
+    padding: 0; }
+  input[type=color]::-webkit-color-swatch {
+    border: none; }
+
 #color-picker {
   display: none; }
 
@@ -155,6 +172,46 @@ output, label span {
   display: inline-block;
   width: 50px;
   height: 50px; }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 30px; }
+  .switch input {
+    display: none; }
+
+.check {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333;
+  -webkit-transition: .4s;
+  transition: .4s; }
+  .check:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s; }
+
+input[type=checkbox]:checked + .check {
+  background-color: MediumTurquoise; }
+
+input[type=checkbox]:focus + .check {
+  box-shadow: 0 0 1px MediumTurquoise; }
+
+input[type=checkbox]:checked + .check:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px); }
 
 button {
   font: normal 16px/21px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;

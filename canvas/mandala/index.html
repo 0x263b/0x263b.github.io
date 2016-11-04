@@ -27,10 +27,13 @@
 	</div>
 	<div class="slider">
 		<label for="mirror">Mirror</label>
-		<input type="checkbox" id="mirror" name="mirror" checked>
+		<label class="switch">
+		   	<input type="checkbox" id="mirror" name="mirror" checked>
+		    <div class="check"></div>
+		</label>
 	</div>
 	<div class="slider" id="input-color">
-		<labek for="color">Color</labek>
+		<label for="color">Color</label>
 		<input type="color" id="color" name="color" value="#ffffff">
 	</div>
 	<div id="color-picker">
@@ -207,8 +210,8 @@ function undo_draw() {
 }
 
 canvas.addEventListener('mousedown', function(event) {
-	var x = Math.ceil(event.clientX - main.offsetLeft)
-	var y = Math.ceil(event.clientY - main.offsetTop)
+	var x = Math.ceil(event.clientX - main.offsetLeft + document.body.scrollLeft)
+	var y = Math.ceil(event.clientY - main.offsetTop + document.body.scrollTop)
 
 	this.drawing = true
 	startingX = x
@@ -216,8 +219,8 @@ canvas.addEventListener('mousedown', function(event) {
 })
 
 canvas.addEventListener('mousemove', function(event) {
-	var x = Math.ceil(event.clientX - main.offsetLeft)
-	var y = Math.ceil(event.clientY - main.offsetTop)
+	var x = Math.ceil(event.clientX - main.offsetLeft + document.body.scrollLeft)
+	var y = Math.ceil(event.clientY - main.offsetTop + document.body.scrollTop)
 
 	if (this.drawing) {
 		points.push({
@@ -232,6 +235,8 @@ canvas.addEventListener('touchstart', function(e) {
 	e.preventDefault()
 	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
 	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+		x += document.body.scrollLeft
+		y += document.body.scrollTop
 
 	this.drawing = true
 	startingX = x
@@ -242,6 +247,8 @@ canvas.addEventListener('touchmove', function(e) {
 	e.preventDefault()
 	var x = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
 	var y = Math.ceil((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+		x += document.body.scrollLeft
+		y += document.body.scrollTop
 
 	points.push({
 		x: x,
@@ -268,7 +275,7 @@ document.addEventListener('mouseup', function(event) {
 	points = []
 })
 
-document.getElementById('mirror').addEventListener('input', function(event) {
+document.getElementById('mirror').addEventListener('click', function(event) {
 	if (this.checked) {
 		opts.mirror = true
 	} else {
