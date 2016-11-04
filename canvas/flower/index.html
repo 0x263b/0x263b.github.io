@@ -16,46 +16,46 @@
 		<canvas id="canvas"></canvas>
 
 <div class="controls">
-	<p>
+	<div class="slider">
 		<label for="count">Point Pairs</label>
 		<input id="count" type="range" name="count" 
 			min="1" max="12" step="1" value="5"
 			oninput="changeParams('count', this.value);
 				countLabel.value = this.value">
 		<output name="countLabel" id="countLabel">5</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="radius">Radius Base</label>
 		<input id="radius" type="range" name="radius" 
 			min="0" max="400" step="20" value="150"
 			oninput="changeParams('radius', this.value);
 				radiusLabel.value = this.value">
 		<output name="radiusLabel" id="radiusLabel">150</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="spread">Radius Spread</label>
 		<input id="spread" type="range" name="spread" 
 			min="0" max="200" step="10" value="60"
 			oninput="changeParams('spread', this.value);
 				spreadLabel.value = this.value">
 		<output name="spreadLabel" id="spreadLabel">60</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="speed">Rotation Speed</label>
 		<input id="speed" type="range" name="speed" 
 			min="0" max="100" step="5" value="50"
 			oninput="changeParams('speed', this.value);
 				speedLabel.value = this.value">
 		<output name="speedLabel" id="speedLabel">50</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="pulse">Pulse Speed</label>
 		<input id="pulse" type="range" name="pulse" 
 			min="0" max="100" step="5" value="30"
 			oninput="changeParams('pulse', this.value);
 				pulseLabel.value = this.value">
 		<output name="pulseLabel" id="pulseLabel">30</output>
-	</p>
+	</div>
 </div>
 
 <script>
@@ -175,7 +175,6 @@ function draw() {
 	ctx.rotate(tick * (opts.speed / 3000))
 	ctx.beginPath()
 	for (var i = 0; i < opts.count * 2; i++) {
-		// this one liner courtesy of ana tudor
 		ctx[(i === 0) ? 'moveTo' : 'lineTo'](points[i].x, points[i].y)
 	}
 	ctx.closePath()
@@ -185,11 +184,12 @@ function draw() {
 	ctx.strokeStyle = 'hsla(' + (tick + 160) + ', 80%, 50%, 0.5)'
 	ctx.stroke()
 
+	// Slowly erase
 	ctx.globalCompositeOperation = 'destination-out'
 	ctx.lineWidth = 2
-	ctx.strokeStyle = 'hsla(0, 0%, 0%, 0.05)'
+	ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)'
 	ctx.stroke()
-	ctx.fillStyle = 'hsla(0, 0%, 0%, 0.05)'
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
 	ctx.fill()
 
 	ctx.restore()

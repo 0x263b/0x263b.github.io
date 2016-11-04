@@ -16,47 +16,47 @@
 		<canvas id="canvas"></canvas>
 
 <div class="controls">
-	<p>
+	<div class="slider">
 		<label for="amount">Amount of Particles</label>
 		<input id="amount" type="range" name="amount" 
 			min="10" max="2000" step="50" value="760"
 			oninput="changeParams('amount', this.value);
 				amountLabel.value = this.value">
 		<output name="amountLabel" id="amountLabel">760</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="increase">Speed</label>
 		<input id="increase" type="range" name="increase" 
 			min="0" max="0.05" step="0.001" value="0.01"
 			oninput="changeParams('increase', this.value);
 				valueLabel.value = this.value">
 		<output name="valueLabel" id="valueLabel">0.01</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="size">Particle Size</label>
 		<input id="size" type="range" name="size" 
 			min="0" max="10" step="0.5" value="2"
 			oninput="changeParams('size', this.value);
 				sizeLabel.value = this.value">
 		<output name="sizeLabel" id="sizeLabel">2</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="height">Wave Height</label>
 		<input id="height" type="range" name="height" 
 			min="1" max="250" step="1" value="80"
 			oninput="changeParams('height', this.value);
 				heightLabel.value = this.value">
 		<output name="heightLabel" id="heightLabel">80</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="delay_factor">Delay factor</label>
 		<input id="delay_factor" type="range" name="height" 
 			min="1" max="10" step="0.1" value="2.5"
 			oninput="changeParams('delay_factor', this.value);
 				delayLabel.value = this.value">
 		<output name="delayLabel" id="delayLabel">2.5</output>
-	</p>
-	<p>
+	</div>
+	<div class="slider">
 		<label for="waveform">Wavefform</label>
 		<select id="waveform" 
 			onchange="changeFunction(this.value)" 
@@ -68,7 +68,7 @@
 			<option>Sec</option>
 			<option>Cot</option>
 		</select>
-	</p>
+	</div>
 </div>
 
 <script type="text/javascript">

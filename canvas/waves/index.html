@@ -172,9 +172,12 @@ function render() {
 	var previousMidpoint = null
 
 	// Slowly erase
-	ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+	ctx.globalCompositeOperation = 'destination-out'
+	ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
 	ctx.fillRect(0, 0, width, height)
+
 	ctx.save()
+	
 	ctx.lineWidth = 0.5
 	ctx.translate(0, height / 2)
 	ctx.globalCompositeOperation = "lighter"

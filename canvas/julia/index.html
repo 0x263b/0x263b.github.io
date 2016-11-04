@@ -16,41 +16,41 @@
 		<canvas id="canvas"></canvas>
 
 <div class="controls">
-	<p>
+	<div class="slider">
 		<label for="ka">ka: </label>
 		<input type="range" id="ka" name="ka" 
 			min="-1" max="1" step=".01" value="0.31"
 			oninput="changeParams('ka', this.value);
 				kaLabel.value = this.value">
 		<output name="kaLabel" id="kaLabel">0.31</output>
-	</p>
+	</div>
 
-	<p>
+	<div class="slider">
 		<label for="kb">kb: </label>
 		<input type="range" id="kb" name="kb" 
 			min="-1" max="1" step=".01" value="-0.03"
 			oninput="changeParams('kb', this.value);
 				kbLabel.value = this.value">
 		<output name="kbLabel" id="kbLabel">-0.03</output>
-	</p>
+	</div>
 
-	<p>
+	<div class="slider">
 		<label>From: </label>
 		<input type="range" id="from" name="from"
 			min="-5" max="5" step=".01" value="-2"
 			oninput="changeParams('from', this.value);
 				fromLabel.value = this.value">
 		<output name="fromLabel" id="fromLabel">-2</output>
-	</p>
+	</div>
 
-	<p>
+	<div class="slider">
 		<label for="to">To: </label>
 		<input type="range" id="to" name="to"
 			min="-5" max="5" step=".01" value="2"
 			oninput="changeParams('to', this.value);
 				toLabel.value = this.value">
 		<output name="toLabel" id="toLabel">2</output>
-	</p>
+	</div>
 </div>
 
 <script>
