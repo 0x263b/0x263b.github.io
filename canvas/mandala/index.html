@@ -66,8 +66,8 @@ var points = []
 var startingX
 var startingY
 
-var centerX = canvas.width / 2
-var centerY = canvas.height / 2
+var centerX = width / 2
+var centerY = width / 2
 
 function changeSectors(event) {
 	if (event) {
@@ -103,16 +103,16 @@ function hexToRgb(hex) {
 
 function draw() {
 	ctx.lineWidth = 0
-	ctx.lineJoin = ctx.lineCap = 'round'
+	//ctx.lineJoin = ctx.lineCap = 'round'
 	ctx.strokeStyle = hexToRgb(opts.color)
 	ctx.shadowBlur = 0.5
 	ctx.shadowColor = opts.color
 
 	for (var i = 0; i < opts.sectors; i++) {
 		// rotate
-		ctx.translate(canvas.width/2, canvas.height/2)
+		ctx.translate(width/2, width/2)
 		ctx.rotate(opts.angle)
-		ctx.translate(-canvas.width/2, -canvas.height/2)
+		ctx.translate(-width/2, -width/2)
 
 		for (var j = 1; j < points.length; j++) {
 			ctx.beginPath()
@@ -125,13 +125,13 @@ function draw() {
 	if (opts.mirror) {
 		for (var i = 0; i < opts.sectors; i++) {
 			// rotate
-			ctx.translate(canvas.width/2, canvas.height/2)
+			ctx.translate(width/2, width/2)
 			ctx.rotate(opts.angle)
-			ctx.translate(-canvas.width/2, -canvas.height/2)
+			ctx.translate(-width/2, -width/2)
 
 			for (var j = 1; j < points.length; j++) {
-				var x1 = Math.abs(points[j - 1].x - canvas.width),
-					x2 = Math.abs(points[j].x - canvas.width)
+				var x1 = Math.abs(points[j - 1].x - width),
+					x2 = Math.abs(points[j].x - width)
 
 				ctx.beginPath()
 				ctx.moveTo(x1, points[j - 1].y)
@@ -162,6 +162,33 @@ canvas.addEventListener('mousemove', function(event) {
 		})
 		draw()
 	}
+})
+
+canvas.addEventListener('touchstart', function(e) {
+	e.preventDefault()
+	var x = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
+	var y = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+
+	this.drawing = true
+	startingX = x
+	startingY = y
+})
+
+canvas.addEventListener('touchmove', function(e) {
+	e.preventDefault()
+	var x = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageX : null)
+	var y = ((typeof e.targetTouches[0] !== "undefined") ? e.targetTouches[0].pageY : null)
+
+	points.push({
+		x: x,
+		y: y
+	})
+	draw()
+})
+
+document.addEventListener('touchend', function(event) {
+	canvas.drawing = false
+	points = []
 })
 
 document.addEventListener('mouseup', function(event) {
