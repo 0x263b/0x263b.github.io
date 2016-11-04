@@ -6,17 +6,19 @@
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
-		<title>Mandala</title>
+		<title>Mandala alt</title>
 
 		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
 
 	</head>
 
-	<body class="canvas canvas_mandala canvas_mandala_index">
-		<main id="main">
-	<canvas id="background"></canvas>
-	<canvas id="canvas"></canvas>
-</main>
+	<body class="canvas canvas_mandala-alt canvas_mandala-alt_index">
+		<div class="canvas_mandala">
+	<main id="main">
+		<canvas id="background"></canvas>
+		<canvas id="canvas"></canvas>
+	</main>
+</div>
 
 <div class="controls">
 	<p>
@@ -59,7 +61,7 @@ var opts = {
 	sectors: 16,
 	angle: (360 / 16) * (Math.PI / 180),
 	mirror: true,
-	color: '#ffffff'
+	color: 'rgba(255,255,255,0.1)'
 }
 
 var points = []
@@ -96,51 +98,56 @@ function changeSectors(event) {
 
 changeSectors()
 
-function hexToRgb(hex) {
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-	return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, 0.1)`
-}
-
 function draw() {
 	ctx.lineWidth = 0.5
 	ctx.lineJoin = ctx.lineCap = 'round'
-	ctx.strokeStyle = hexToRgb(opts.color)
-	ctx.shadowBlur = 0.5
-	ctx.shadowColor = opts.color
+	ctx.strokeStyle = opts.color
 
 	for (var i = 0; i < opts.sectors; i++) {
-		// rotate
-		ctx.translate(width/2, width/2)
-		ctx.rotate(opts.angle)
-		ctx.translate(-width/2, -width/2)
-
 		for (var j = 1; j < points.length; j++) {
+			var from = rotate(points[j - 1].x, points[j - 1].y, i)
+			var to = rotate(points[j].x, points[j].y, i)
+
 			ctx.beginPath()
-			ctx.quadraticCurveTo(points[j - 1].x, points[j - 1].y, points[j].x, points[j].y)
-			//ctx.moveTo(points[j - 1].x, points[j - 1].y)
-			//ctx.lineTo(points[j].x, points[j].y)
+			ctx.quadraticCurveTo(from.x, from.y, to.x, to.y)
 			ctx.stroke()
 		}
 	}
 
 	if (opts.mirror) {
 		for (var i = 0; i < opts.sectors; i++) {
-			// rotate
-			ctx.translate(width/2, width/2)
-			ctx.rotate(opts.angle)
-			ctx.translate(-width/2, -width/2)
-
 			for (var j = 1; j < points.length; j++) {
-				var x1 = Math.abs(points[j - 1].x - width),
-					x2 = Math.abs(points[j].x - width)
+				var from = rotate(points[j - 1].x, points[j - 1].y, i)
+				var to = rotate(points[j].x, points[j].y, i)
+
+					from.x = Math.abs(from.x - width),
+					to.x = Math.abs(to.x - width)
 
 				ctx.beginPath()
-				ctx.quadraticCurveTo(x1, points[j - 1].y, x2, points[j].y)
-				//ctx.moveTo(x1, points[j - 1].y)
-				//ctx.lineTo(x2, points[j].y)
+				ctx.quadraticCurveTo(from.x, from.y, to.x, to.y)
 				ctx.stroke()
 			}
 		}
+	}
+}
+
+function hexToRgb(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+	return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, 0.1)`
+}
+
+function rotate(x, y, angle) {
+	var cos = Math.cos,
+		sin = Math.sin
+
+	var radians = (Math.PI / 180) * ((360 /opts.sectors) * angle)
+
+	var xr = (x - centerX) * cos(radians) - (y - centerY) * sin(radians) + centerX
+	var yr = (x - centerX) * sin(radians) + (y - centerY) * cos(radians) + centerY
+
+	return {
+		x: xr, 
+		y: yr
 	}
 }
 
@@ -207,7 +214,7 @@ document.getElementById('mirror').addEventListener('change', function(event) {
 })
 
 document.getElementById('color').addEventListener('change', function(event) {
-	opts.color = this.value
+	opts.color = hexToRgb(this.value)
 })
 
 document.getElementById('sectors').addEventListener('change', changeSectors)
@@ -234,7 +241,6 @@ window.addEventListener('resize', function(event) {
 })
 
 </script>
-</body>
 
 	</body>
 </html>
