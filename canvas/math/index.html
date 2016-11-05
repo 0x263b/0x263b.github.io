@@ -58,16 +58,19 @@
 	</div>
 	<div class="slider">
 		<label for="waveform">Waveform</label>
-		<select id="waveform" 
-			onchange="changeFunction(this.value)" 
-			oninput="changeFunction(this.value)">
-			<option selected>Sin</option>
-			<option>Cos</option>
-			<option>Tan</option>
-			<option>Csc</option>
-			<option>Sec</option>
-			<option>Cot</option>
-		</select>
+		<div class="select">
+			<select id="waveform" 
+				onchange="changeFunction(this.value)" 
+				oninput="changeFunction(this.value)">
+				<option selected>Sin</option>
+				<option>Cos</option>
+				<option>Tan</option>
+				<option>Csc</option>
+				<option>Sec</option>
+				<option>Cot</option>
+			</select>
+			<em>▾</em>
+		</div>
 	</div>
 </div>
 

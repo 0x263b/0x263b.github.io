@@ -49,16 +49,16 @@ output, label span {
       outline: none; }
     .slider input[type=range]:focus::-webkit-slider-runnable-track {
       outline: none;
-      background-color: Gold; }
+      background-color: MediumTurquoise; }
     .slider input[type=range]:focus::-webkit-slider-thumb {
       outline: none;
-      background-color: Gold; }
+      background-color: MediumTurquoise; }
     .slider input[type=range]:focus::-moz-range-track {
       outline: none;
-      background-color: Gold; }
+      background-color: MediumTurquoise; }
     .slider input[type=range]:focus::-moz-range-thumb {
       outline: none;
-      background-color: Gold; }
+      background-color: MediumTurquoise; }
   .slider input[type=range]::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     background-color: #777;
@@ -218,6 +218,52 @@ button {
   border-radius: 3px;
   margin: 0.5em 0.5em 0.5em 0;
   cursor: pointer; }
+
+.select {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px; }
+  .select em {
+    font: normal 20px/30px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;
+    color: #fff;
+    position: absolute;
+    left: 70px;
+    top: 0;
+    z-index: -1;
+    vertical-align: middle; }
+
+select {
+  background-color: transparent;
+  border: 1px solid #333;
+  border-radius: 3px;
+  box-shadow: none;
+  color: white;
+  display: inline-block;
+  font: normal 16px/21px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;
+  margin: 0;
+  padding: 0 10px;
+  width: 90px;
+  height: 36px;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+  select::-ms-expand {
+    display: none; }
+  select:hover {
+    color: #50E3C2; }
+  select:focus {
+    outline: none;
+    box-shadow: 0 0 2px MediumTurquoise;
+    background-color: MediumTurquoise;
+    color: black; }
+
+option {
+  background-color: black;
+  color: #ccc; }
+  option:checked {
+    color: white; }
 
 .canvas_mandala main {
   max-width: 600px;
