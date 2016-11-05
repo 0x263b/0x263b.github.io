@@ -21,11 +21,31 @@
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-var ww = window.innerWidth,
-	wh = window.innerHeight
-
 var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+var radius = width > height ? width * 2/3 : height * 2/3
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
 ctx.scale(ratio, ratio)
+
+window.onresize = function(event) {
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+	k.radius = radius = width > height ? width * 2/3 : height * 2/3
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
+}
 
 var half_PI = Math.PI / 2,
 	two_PI = Math.PI * 2,
@@ -39,13 +59,10 @@ var k = {
 	offsetScale: .8,
 	offsetX: 0,
 	offsetY: 0,
-	radius: 1100,
+	radius: radius,
 	slices: 16,
 	zoom: 1.5
 }
-
-canvas.width = k.radius * 2
-canvas.height = k.radius * 2
 
 function draw(){
 	var scale, step, cx
@@ -58,7 +75,7 @@ function draw(){
 	  
 	for (var i = 0; i <= k.slices; i++) {
 		ctx.save()
-		ctx.translate(k.radius, k.radius)
+		ctx.translate(width/2, height/2)
 		ctx.rotate(i * step)
 		ctx.beginPath()
 		ctx.moveTo(-0.5, -0.5)
@@ -84,21 +101,15 @@ var tr = k.offsetRotation
 window.addEventListener('mousemove', mousemove, false)
 function mousemove(e){
 	var cx, cy, dx, dy, hx, hy
-	cx = ww / 2
-	cy = wh / 2
-	dx = e.pageX / ww
-	dy = e.pageY / wh
+	cx = canvas.width / 2
+	cy = canvas.height / 2
+	dx = e.pageX / canvas.width
+	dy = e.pageY / canvas.height
 	hx = dx - 0.1
 	hy = dy - 0.1
 	tx = hx * k.radius * -.8
 	ty = hy * k.radius * .8
 }
-
-canvas.style.position = 'fixed'
-canvas.style.marginLeft = -k.radius + 'px'
-canvas.style.marginTop = -k.radius + 'px' 
-canvas.style.left = '50%'
-canvas.style.top = '50%'
 
 function render() {
 	tr -= 0.002 
