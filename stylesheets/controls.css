@@ -177,46 +177,37 @@ input[type=color] {
   width: 56px;
   height: 30px; }
 
-.switch {
+input[type=checkbox] {
+  vertical-align: middle;
   position: relative;
-  display: inline-block;
-  min-width: inherit;
-  width: 56px;
-  height: 30px; }
-  .switch input {
-    display: none; }
-
-.check {
-  position: absolute;
+  background: #333;
+  width: 80px;
+  height: 30px;
+  outline: none;
+  margin: 0;
+  font: normal 12px/16px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #333;
-  -webkit-transition: .4s;
-  transition: .4s; }
-  .check:before {
+  -webkit-appearance: initial;
+  -webkit-tap-highlight-color: transparent; }
+  input[type=checkbox]:after {
     position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s; }
-
-input[type=checkbox]:checked + .check {
-  background-color: MediumTurquoise; }
-
-input[type=checkbox]:focus + .check {
-  box-shadow: 0 0 1px red; }
-
-input[type=checkbox]:checked + .check:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px); }
+    left: 0;
+    top: 3px;
+    display: block;
+    line-height: 24px;
+    width: 40px;
+    background: black;
+    text-align: center;
+    transition: all 0.25s ease-in 0s;
+    color: #fff;
+    border: none; }
+  input[type=checkbox]:after {
+    transform: translateX(3px);
+    content: "OFF"; }
+  input[type=checkbox]:checked:after {
+    transform: translateX(37px);
+    content: "ON";
+    background: MediumTurquoise; }
 
 button {
   font: normal 16px/21px BlinkMacSystemFont, -apple-system, Roboto, Helvetica Neue, sans-serif;
