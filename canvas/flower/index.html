@@ -67,7 +67,7 @@ var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
 var ratio = window.devicePixelRatio
-var width = 600 < window.innerWidth ? 600 : window.innerWidth
+var width = Math.min(window.innerWidth, 600)
 
 canvas.width = canvas.height = width * ratio
 canvas.style.width = canvas.style.height = width + "px"

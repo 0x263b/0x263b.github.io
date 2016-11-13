@@ -132,7 +132,7 @@ function toRGB(h, s, l) {
 	if (s === 0) {
 		r = g = b = l // achromatic
 	} else {
-		var hue2rgb = function hue2rgb(p, q, t) {
+		var hue2rgb = function(p, q, t) {
 			if (t < 0) t += 1
 			if (t > 1) t -= 1
 			if (t < 1 / 6) return p + (q - p) * 6 * t
@@ -258,6 +258,47 @@ window.onresize = function(event) {
 </script>
 </body>
 </html>
+
+<div id="fullscreen"></div>
+<div id="signature">Abram</div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
 
 	</body>
 </html>

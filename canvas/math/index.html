@@ -81,7 +81,7 @@ var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
 var ratio = window.devicePixelRatio
-var width = 600 < window.innerWidth ? 600 : window.innerWidth
+var width = Math.min(window.innerWidth, 600)
 
 canvas.width = canvas.height = width * ratio
 canvas.style.width = canvas.style.height = width + "px"
@@ -104,9 +104,9 @@ function toRGB(h, s, l) {
 	l /= 100
 
 	if (s === 0) {
-		r = g = b = l // achromatic
+		r = g = b = l
 	} else {
-		var hue2rgb = function hue2rgb(p, q, t) {
+		function hue2rgb(p, q, t) {
 			if (t < 0) t += 1
 			if (t > 1) t -= 1
 			if (t < 1 / 6) return p + (q - p) * 6 * t
@@ -125,7 +125,7 @@ function toRGB(h, s, l) {
 	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
 }
 
-var valueFunction = function(_dt, _i, _df) {
+function valueFunction(_dt, _i, _df) {
 	return Math.sin((_dt + _i) * _df)
 }
 

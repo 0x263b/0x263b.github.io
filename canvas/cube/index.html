@@ -35,7 +35,7 @@ ctx.scale(ratio, ratio)
 ctx.translate(canvas.width / 2, canvas.height / 2)
 
 var points = []
-var depth = 5
+var depth = 4
 var scale = 70
 for (var x = -depth / 2; x <= depth / 2; x++) {
 	for (var y = -depth / 2; y <= depth / 2; y++) {
@@ -44,11 +44,11 @@ for (var x = -depth / 2; x <= depth / 2; x++) {
 			var size = 1
 
 			if (x == 0 && y == 0 && z == 0) {
-				size = 4
-			} else if (Math.abs(x) <= 1 && Math.abs(y) <= 1 && Math.abs(z) <= 1) {
 				size = 3
-			} else if (Math.abs(x) <= 2 && Math.abs(y) <= 2 && Math.abs(z) <= 2) {
+			} else if (Math.abs(x) <= 1 && Math.abs(y) <= 1 && Math.abs(z) <= 1) {
 				size = 2
+			} else if (Math.abs(x) <= 2 && Math.abs(y) <= 2 && Math.abs(z) <= 2) {
+				size = 1
 			}
 
 			points.push({
@@ -205,7 +205,7 @@ function toRGB(h, s, l) {
 	if (s === 0) {
 		r = g = b = l // achromatic
 	} else {
-		var hue2rgb = function hue2rgb(p, q, t) {
+		var hue2rgb = function(p, q, t) {
 			if (t < 0) t += 1
 			if (t > 1) t -= 1
 			if (t < 1 / 6) return p + (q - p) * 6 * t
@@ -225,7 +225,47 @@ function toRGB(h, s, l) {
 }
 
 </script>
-</body>
+
+<div id="fullscreen"></div>
+<div id="signature">Abram</div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
 
 	</body>
 </html>

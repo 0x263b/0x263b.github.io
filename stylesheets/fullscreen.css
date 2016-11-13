@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   box-sizing: border-box; }
 
@@ -15,5 +16,51 @@ body {
   width: 100%;
   height: 100%;
   background-color: black;
+  color: #555;
   margin: 0;
   overflow: hidden; }
+
+#fullscreen {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  cursor: pointer;
+  font: normal 21px/30px BlinkMacSystemFont, -apple-system, "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+  display: inline-block;
+  padding: 0 5px; }
+
+#fullscreen:after {
+  content: "⤢"; }
+
+:-webkit-full-screen #fullscreen:after {
+  content: "╳"; }
+
+:-moz-full-screen #fullscreen:after {
+  content: "╳"; }
+
+:-ms-fullscreen #fullscreen:after {
+  content: "╳"; }
+
+:fullscreen #fullscreen:after {
+  content: "╳"; }
+
+#signature {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  font: normal 16px/21px BlinkMacSystemFont, -apple-system, "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+  display: inline-block;
+  padding: 0 5px; }
+
+:-webkit-full-screen #signature {
+  display: none; }
+
+:-moz-full-screen #signature {
+  display: none; }
+
+:-ms-fullscreen #signature {
+  display: none; }
+
+:fullscreen #signature {
+  display: none; }
