@@ -19,7 +19,7 @@
 <div class="slider">
 		<label for="sides">Sides</label>
 		<input type="range" id="sides" name="sides" 
-			min="2" max="20" step="1" value="6"
+			min="2" max="12" step="1" value="6"
 			oninput="changeParams('sides', this.value);
 				sidesLabel.value = this.value">
 		<output name="sidesLabel" id="sidesLabel">6</output>
@@ -39,6 +39,8 @@ canvas.width = canvas.height = width * ratio
 canvas.style.width = canvas.style.height = width + "px"
 ctx.scale(ratio, ratio)
 
+ctx.globalCompositeOperation = 'screen'
+
 var opts = {
 	sides: 6
 }
@@ -48,15 +50,9 @@ function changeParams(param, value) {
 	render()
 }
 
-function map(n, start1, stop1, start2, stop2) {
-  return ((n-start1)/(stop1-start1))*(stop2-start2)+start2
-}
-
 function render() {
-	ctx.fillStyle = 'black'
-	ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-	drawCircle(width/2, width/2, width/2)
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	drawCircle(width, width, width)
 }
 
 function drawCircle(x, y, diam) {
@@ -74,8 +70,9 @@ function drawCircle(x, y, diam) {
 	}
 
 	ctx.beginPath()
-	ctx.arc(x, y, diam, 0, 2 * Math.PI)
-	ctx.fillStyle = `rgba(251, 53, 80, ${0.6/opts.sides})`
+	ctx.arc(x/2, y/2, diam/2, 0, 2 * Math.PI)
+	//ctx.fillStyle = `rgba(72, 205, 205, ${0.5/opts.sides})`
+	ctx.fillStyle = `hsla(${diam % 360}, 75%, 50%, ${0.75/opts.sides})`
 	ctx.closePath()
 	ctx.fill()
 }
