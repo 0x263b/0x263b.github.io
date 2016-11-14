@@ -19,9 +19,8 @@
 <div class="slider">
 		<label for="sides">Sides</label>
 		<input type="range" id="sides" name="sides" 
-			min="2" max="12" step="1" value="6"
-			oninput="changeParams('sides', this.value);
-				sidesLabel.value = this.value">
+			min="2" max="10" step="1" value="6"
+			oninput="changeParams('sides', this.value)">
 		<output name="sidesLabel" id="sidesLabel">6</output>
 	</div>
 </div>
@@ -47,6 +46,7 @@ var opts = {
 
 function changeParams(param, value) {
 	opts[param] = parseFloat(value)
+	sidesLabel.value = value
 	render()
 }
 
@@ -56,12 +56,11 @@ function render() {
 }
 
 function drawCircle(x, y, diam) {
-	if (diam < 10) {
-		return
-	}
-
 	diam *= .5
 	for (var i = 0; i < opts.sides; i++) {
+		if (diam < 10) {
+			continue
+		}
 		drawCircle(
 			x + Math.cos((2*Math.PI) / opts.sides * i - Math.PI / 2) * diam,
 			y + Math.sin((2*Math.PI) / opts.sides * i - Math.PI / 2) * diam,
@@ -71,7 +70,7 @@ function drawCircle(x, y, diam) {
 
 	ctx.beginPath()
 	ctx.arc(x/2, y/2, diam/2, 0, 2 * Math.PI)
-	//ctx.fillStyle = `rgba(72, 205, 205, ${0.5/opts.sides})`
+	// ctx.fillStyle = `rgba(72, 205, 205, ${0.5/opts.sides})`
 	ctx.fillStyle = `hsla(${diam % 360}, 75%, 50%, ${0.75/opts.sides})`
 	ctx.closePath()
 	ctx.fill()
