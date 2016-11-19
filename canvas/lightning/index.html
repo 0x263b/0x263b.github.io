@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Lightning</title>
+
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+	</head>
+
+	<body class="canvas canvas_lightning canvas_lightning_index">
+		<canvas id="canvas"></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+
+window.onresize = function(event) {
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
+}
+
+
+</script>
+</body>
+
+<div id="fullscreen"></div>
+<div id="signature">Abram</div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
+
+	</body>
+</html>
