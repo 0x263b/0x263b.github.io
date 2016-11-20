@@ -56,10 +56,6 @@ function onKeydown(e) {
 	}
 }
 
-function isKeydown(keyname) {
-	return codes[keyname]
-}
-
 
 // Load textures
 var images = []
@@ -104,8 +100,8 @@ function getTextures() {
 
 
 // Map
-var canvas = document.getElementById("canvas")
-var ctx = canvas.getContext("2d")
+var canvas = document.getElementById('canvas')
+var ctx = canvas.getContext('2d')
 
 function resize() {
 	var ratio  = window.devicePixelRatio
@@ -114,8 +110,8 @@ function resize() {
 
 	canvas.width  = width * ratio
 	canvas.height = height * ratio
-	canvas.style.width  = width + "px"
-	canvas.style.height = height + "px"
+	canvas.style.width  = width + 'px'
+	canvas.style.height = height + 'px'
 	
 	ctx.scale(ratio, ratio)
 	loadBuffer()
@@ -160,7 +156,7 @@ var worldMap = [
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-var posX = 1.5,
+var posX = 4.5,
 	posY = 1.5,
 	dirX = -1.0,
 	dirY = 0.0,
@@ -187,16 +183,16 @@ function loadBuffer() {
 }
 
 function input() {
-	if (isKeydown("up")) {
+	if (codes.up) {
 		if (worldMap[(posX + dirX * moveSpeed) | 0][posY | 0] == 0) posX += dirX * moveSpeed
 		if (worldMap[posX | 0][(posY + dirY * moveSpeed) | 0] == 0) posY += dirY * moveSpeed
 	}
-	if (isKeydown("down")) {
+	if (codes.down) {
 		// move backwards if no wall behind you
 		if (worldMap[(posX - dirX * moveSpeed) | 0][posY | 0] == 0) posX -= dirX * moveSpeed
 		if (worldMap[posX | 0][(posY - dirY * moveSpeed) | 0] == 0) posY -= dirY * moveSpeed
 	}
-	if (isKeydown("right")) {
+	if (codes.right) {
 		// both camera direction and camera plane must be rotated
 		var oldDirX = dirX
 		dirX = dirX * Math.cos(-rotSpeed) - dirY * Math.sin(-rotSpeed)
@@ -205,7 +201,7 @@ function input() {
 		planeX = planeX * Math.cos(-rotSpeed) - planeY * Math.sin(-rotSpeed)
 		planeY = oldPlaneX * Math.sin(-rotSpeed) + planeY * Math.cos(-rotSpeed)
 	}
-	if (isKeydown("left")) {
+	if (codes.left) {
 		// both camera direction and camera plane must be rotated
 		var oldDirX = dirX
 		dirX = dirX * Math.cos(rotSpeed) - dirY * Math.sin(rotSpeed)
@@ -320,9 +316,9 @@ function draw() {
 			var color = wallTex[texSize * texY + texX]
 			var i = 4 * (w * y) + 4 * x
 
-			buffer[i + 0] = color[0] * shade
-			buffer[i + 1] = color[1] * shade
-			buffer[i + 2] = color[2] * shade
+			buffer[i + 0] = color[0] // * shade
+			buffer[i + 1] = color[1] // * shade
+			buffer[i + 2] = color[2] // * shade
 			buffer[i + 3] = 255
 		}
 
@@ -408,7 +404,7 @@ document.onkeyup = onKeyup
 document.onkeydown = onKeydown
 window.onresize = resize
 
-var textureFiles = ["/images/raycast/brick.png", "/images/raycast/floor.png", "/images/raycast/ceiling.png"]
+var textureFiles = ['/images/raycast/brick.png', '/images/raycast/floor.png', '/images/raycast/ceiling.png']
 initiateLoad(textureFiles, start)
 
 </script>
