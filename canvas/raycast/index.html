@@ -17,6 +17,8 @@
 
 <script>
 'use strict'
+// http://lodev.org/cgtutor/raycasting.html
+
 
 // Key handling
 var codes = {
@@ -94,7 +96,6 @@ function getTextures() {
 		}
 		textures.push(rgbArray)
 	}
-
 	return textures
 }
 
@@ -110,7 +111,7 @@ function resize() {
 
 	canvas.width  = width * ratio
 	canvas.height = height * ratio
-	canvas.style.width  = width + 'px'
+	canvas.style.width  = width  + 'px'
 	canvas.style.height = height + 'px'
 	
 	ctx.scale(ratio, ratio)
@@ -122,15 +123,6 @@ var texture,
 
 function initTexture() {
 	texture = getTextures()
-	texture.push([])
-	for (var x = 0; x < texSize; x++) {
-		for (var y = 0; y < texSize; y++) {
-			var xorcolor = (x * 256 / texSize) ^ (y * 256 / texSize)
-			var d = Math.sqrt((texSize / 2 - x) * (texSize / 2 - x) + (texSize / 2 - y) * (texSize / 2 - y))
-			var sincolor = 256 * (1 + Math.sin(d / 2)) / 2
-			// texture[3][texSize * y + x] = [xorcolor, 0, sincolor] // blue sine pattern
-		}
-	}
 }
 
 var worldMap = [
@@ -273,10 +265,10 @@ function draw() {
 			perpWallDist = Math.abs((mapY - rayPosY + (1 - stepY) / 2) / rayDirY)
 		}
 
-		//Calculate height of line to draw on screen
+		// calculate height of line to draw on screen
 		var lineHeight = Math.abs((h / perpWallDist) | 0)
 
-		//calculate lowest and highest pixel to fill in current stripe
+		// calculate lowest and highest pixel to fill in current stripe
 		var drawStart = ((h - lineHeight) / 2) | 0
 		if (drawStart < 0) {
 			drawStart = 0
@@ -294,7 +286,7 @@ function draw() {
 		}
 		wallX -= wallX | 0
 
-		var texX = (wallX * texSize) /* | 0*/
+		var texX = (wallX * texSize) // | 0
 		if (side == 0 && rayDirX > 0) {
 			texX = texSize - texX - 1
 		}
@@ -316,14 +308,15 @@ function draw() {
 			var color = wallTex[texSize * texY + texX]
 			var i = 4 * (w * y) + 4 * x
 
-			buffer[i + 0] = color[0] // * shade
-			buffer[i + 1] = color[1] // * shade
-			buffer[i + 2] = color[2] // * shade
+			buffer[i + 0] = color[0] * shade
+			buffer[i + 1] = color[1] * shade
+			buffer[i + 2] = color[2] * shade
 			buffer[i + 3] = 255
 		}
 
-		var floorXWall, floorYWall //x, y position of the floor texel at the bottom of the wall
-			//4 different wall directions possible
+		var floorXWall, floorYWall // x, y position of the floor texel at the bottom of the wall
+			
+		// 4 different wall directions possible
 		if (side == 0 && rayDirX > 0) {
 			floorXWall = mapX
 			floorYWall = mapY + wallX
@@ -333,7 +326,7 @@ function draw() {
 		} else if (side == 1 && rayDirY > 0) {
 			floorXWall = mapX + wallX
 			floorYWall = mapY
-		} else { /*  side == 1 && rayDirY > 0*/
+		} else { //  side == 1 && rayDirY > 0
 			floorXWall = mapX + wallX
 			floorYWall = mapY + 1.0
 		}
@@ -342,14 +335,14 @@ function draw() {
 		var distWall = perpWallDist
 		var distPlayer = 0.0
 
-		if (drawEnd < 0) drawEnd = h //becomes < 0 when the integer overflows
+		if (drawEnd < 0) drawEnd = h // becomes < 0 when the integer overflows
 
 		var ceilTex = texture[2]
 		var floorTex = texture[1]
 
-		//draw the floor from drawEnd to the bottom of the screen
+		// draw the floor from drawEnd to the bottom of the screen
 		for (var y = drawEnd; y < h; y++) {
-			currentDist = h / (2.0 * y - h) //you could make a small lookup table for this instead
+			currentDist = h / (2.0 * y - h) // you could make a small lookup table for this instead
 
 			var weight = (currentDist - distPlayer) / (distWall - distPlayer)
 			var nextWeight = (h / (2.0 * (y + 1) - h)) / distWall
@@ -365,7 +358,7 @@ function draw() {
 
 			var color = floorTex[texSize * (floorTexY | 0) + (floorTexX | 0)]
 
-			//floor
+			// floor
 			i = 4 * (w * y) + 4 * x
 
 			buffer[i + 0] = (color[0]) / 2
@@ -375,7 +368,7 @@ function draw() {
 
 			color = ceilTex[texSize * (floorTexY | 0) + (floorTexX | 0)]
 
-			//ceiling
+			// ceiling
 			i = 4 * (w * (h - y - 1)) + 4 * x
 
 			buffer[i + 0] = color[0] / 2
