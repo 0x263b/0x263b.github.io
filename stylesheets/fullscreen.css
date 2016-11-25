@@ -18,7 +18,8 @@ body {
   background-color: black;
   color: #555;
   margin: 0;
-  overflow: hidden; }
+  overflow: hidden;
+  position: relative; }
 
 #fullscreen {
   position: fixed;
@@ -64,3 +65,9 @@ body {
 
 :fullscreen #signature {
   display: none; }
+
+.canvas_dvd .x, .canvas_dvd .y {
+  display: inline-block; }
+.canvas_dvd .logo {
+  fill: white;
+  transition: fill 0.2s ease-in; }

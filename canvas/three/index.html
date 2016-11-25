@@ -472,10 +472,12 @@ function createPreview() {
 
 	ctx = canvas.getContext('2d')
 
-	ctx.lineJoin = 'bevel' /* You can use 'round', 'bevel', 'miter' */ 
-	ctx.lineCap = 'square' /* You can use 'butt', 'round', 'square' */ 
+	ctx.lineJoin = 'bevel'
+	ctx.lineCap = 'square'
 	ctx.lineWidth = 2.0
 }
+
+var exit
 
 function createScene() {
 
@@ -497,23 +499,37 @@ function createScene() {
 	})
 
 	cameraBox = new THREE.Mesh(cameraBoxGeo, cameraBoxMat)
-	var startPLight = new THREE.PointLight(0xFFFFFF, 1, 1)
 
+	// Start light
+	var startPLight = new THREE.PointLight(0xFFFFFF, 1, 2000)
 	startPLight.position.x = -mazeSize / 2 + 400
 	startPLight.position.z = -mazeSize / 2 + 400
-	startPLight.position.y = 600
+	startPLight.position.y = 1000
 
 	sceneTemp.add(startPLight)
 
+	// End light
 	endPLight = new THREE.PointLight(0xAE20C7, 1, 2000)
-
 	endPLight.position.x = mazeSize / 2 - 400
 	endPLight.position.z = mazeSize / 2 - 400
-	endPLight.position.y = 600
+	endPLight.position.y = 1000
 
 	sceneTemp.add(endPLight)
 
-	// ceiling plane			
+	exit = new THREE.Object3D()
+	exit.add( new THREE.Mesh(
+		new THREE.DodecahedronGeometry(250, 0),
+		new THREE.MeshPhongMaterial({
+			color: 0x333333,
+			emissive: 0x000000,
+			side: THREE.FrontSide,
+			shading: THREE.FlatShading
+		})
+	))
+	exit.position.set(-mazeSize / 2 + 400, 500, -mazeSize / 2 + 400)
+	sceneTemp.add(exit)
+
+	// ceiling plane
 	var ceilgeo = new THREE.CubeGeometry(mazeSize, 1, mazeSize)
 	var ceilTexture = new THREE.TextureLoader().load("/images/three/ceiling.png")
 
@@ -549,7 +565,7 @@ function createScene() {
 
 	sceneTemp.add(mesh)
 
-	camera.position.y += 600
+	camera.position.y += 500
 
 	var light = new THREE.AmbientLight(0xFFFFFF)
 
@@ -600,6 +616,9 @@ var movementVecRL = new THREE.Vector3(0, 0, 0)
 function animate() {
 	requestAnimationFrame(animate)
 	render()
+
+	exit.rotation.x += 0.005;
+	exit.rotation.y += 0.005;
 
 	if (keyEvents.up || keyEvents.down || keyEvents.right || keyEvents.left) {
 		// check intersections with walls
