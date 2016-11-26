@@ -60,6 +60,16 @@ translate()
 window.onresize = function(event) {
 	vw = window.innerWidth  - (el.offsetWidth  || 153),
 	vh = window.innerHeight - (el.offsetHeight || 69)
+
+	if (ex >= vw) {
+		ex = vw
+		dirx = -1
+	}
+
+	if (ey >= vh) {
+		ey = vh
+		diry = -1
+	}
 }
 
 </script>
