@@ -31,7 +31,7 @@
 	<div class="slider">
 		<label for="accelerate">accelerate</label>
 		<input id="accelerate" type="range" name="count" 
-			min="0" max="5" step="0.01">
+			min="-1" max="1" step="0.01">
 		<output name="accelerateLabel" id="accelerateLabel"></output>
 	</div>
 	<div class="slider">
@@ -100,7 +100,7 @@ function randStep(min, max, step) {
 function randomize() {
 	opts.step = randStep(0, 355, 0.5)
 	opts.subtract = randStep(-5, 5, 0.5)
-	// opts.accelerate = randStep(0, 5, 0.25)
+	// opts.accelerate = randStep(-1, 1, 0.1)
 
 	init()
 }
