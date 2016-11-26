@@ -34,6 +34,9 @@
 			min="0" max="5" step="0.01">
 		<output name="accelerateLabel" id="accelerateLabel"></output>
 	</div>
+	<div class="slider">
+		<button id="random">Randomize</button>
+	</div>
 </div>
 
 <script>
@@ -64,7 +67,7 @@ function render() {
 		maxrun = 2016,
 		count = 0
 
-	ctx.lineWidth = 0.1
+	ctx.lineWidth = 0.5
 	ctx.beginPath()
 
 	do {
@@ -80,15 +83,26 @@ function render() {
 		count++
 	} while ((sub - subtract) < rx && maxrun > 0)
 
-	ctx.strokeStyle = 'white'
+	ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'
 	ctx.stroke()
 }
-
 
 var opts = {
 	step: 179.5,
 	subtract: 0.19,
 	accelerate: 0
+}
+
+function randStep(min, max, step) {
+	return min + (step * Math.floor(Math.random() * (max - min) / step))
+}
+
+function randomize() {
+	opts.step = randStep(0, 355, 0.5)
+	opts.subtract = randStep(-5, 5, 0.5)
+	// opts.accelerate = randStep(0, 5, 0.25)
+
+	init()
 }
 
 document.getElementById('step').addEventListener('input', function(event) {
@@ -104,14 +118,39 @@ document.getElementById('accelerate').addEventListener('input', function(event) 
 	draw()
 })
 
+document.getElementById('random').addEventListener('click', randomize)
+
 function draw() {
-	stepLabel.value = opts.step
-	subtractLabel.value = opts.subtract
-	accelerateLabel.value = opts.accelerate
+	stepLabel.value = opts.step.toFixed(1)
+	subtractLabel.value = opts.subtract.toFixed(2)
+	accelerateLabel.value = opts.accelerate.toFixed(2)
 	render()
 }
 
-draw()
+function init() {
+	document.getElementById('step').value = opts.step
+	document.getElementById('subtract').value = opts.subtract
+	document.getElementById('accelerate').value = opts.accelerate
+
+	draw()
+}
+
+init()
+
+
+window.addEventListener('resize', function(event) {
+	var newWidth = window.innerWidth
+	if (newWidth === width) return
+	if (newWidth < 600 * ratio) {
+		width = canvas.width = canvas.height = newWidth * ratio
+		canvas.style.width = canvas.style.height = newWidth + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600 * ratio) {
+		width = canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
+	}
+})
 
 </script>
 
