@@ -58,8 +58,8 @@ function toRadians(angle) {
 function render() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-	var rx = canvas.width / 2,
-		ry = canvas.height / 2,
+	var rx = canvas.width / 2 / ratio,
+		ry = canvas.height / 2 / ratio,
 		sub = 1,
 		angle = 0,
 		subtract = opts.subtract,
