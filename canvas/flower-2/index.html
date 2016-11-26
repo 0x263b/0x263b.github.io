@@ -19,17 +19,17 @@
 	<div class="slider">
 		<label for="step">Step</label>
 		<input id="step" type="range" name="count" 
-			min="1" max="355" step="0.5">
+			min="0" max="360" step="0.5">
 		<output name="stepLabel" id="stepLabel"></output>
 	</div>
 	<div class="slider">
-		<label for="subtract">subtract</label>
+		<label for="subtract">Subtract</label>
 		<input id="subtract" type="range" name="count" 
 			min="-5" max="5" step="0.01">
 		<output name="subtractLabel" id="subtractLabel"></output>
 	</div>
 	<div class="slider">
-		<label for="accelerate">accelerate</label>
+		<label for="accelerate">Accelerate</label>
 		<input id="accelerate" type="range" name="count" 
 			min="-1" max="1" step="0.01">
 		<output name="accelerateLabel" id="accelerateLabel"></output>
@@ -56,7 +56,8 @@ function toRadians(angle) {
 }
 
 function render() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.fillStyle = 'black'
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 	var rx = canvas.width / 2 / ratio,
 		ry = canvas.height / 2 / ratio,
@@ -64,7 +65,7 @@ function render() {
 		angle = 0,
 		subtract = opts.subtract,
 		accelerate = opts.accelerate,
-		maxrun = 2016,
+		maxrun = 2000,
 		count = 0
 
 	ctx.lineWidth = 0.5
@@ -98,45 +99,44 @@ function randStep(min, max, step) {
 }
 
 function randomize() {
-	opts.step = randStep(0, 355, 0.5)
+	opts.step = randStep(5, 355, 0.5)
 	opts.subtract = randStep(-5, 5, 0.5)
 	// opts.accelerate = randStep(-1, 1, 0.1)
 
-	init()
+	draw()
 }
 
-document.getElementById('step').addEventListener('input', function(event) {
-	opts.step = parseFloat(this.value)
-	draw()
-})
-document.getElementById('subtract').addEventListener('input', function(event) {
-	opts.subtract = parseFloat(this.value)
-	draw()
-})
-document.getElementById('accelerate').addEventListener('input', function(event) {
-	opts.accelerate = parseFloat(this.value)
-	draw()
-})
-
-document.getElementById('random').addEventListener('click', randomize)
-
 function draw() {
+	el.step.value = opts.step
+	el.subtract.value = opts.subtract
+	el.accelerate.value = opts.accelerate
+
 	stepLabel.value = opts.step.toFixed(1)
 	subtractLabel.value = opts.subtract.toFixed(2)
 	accelerateLabel.value = opts.accelerate.toFixed(2)
 	render()
 }
 
-function init() {
-	document.getElementById('step').value = opts.step
-	document.getElementById('subtract').value = opts.subtract
-	document.getElementById('accelerate').value = opts.accelerate
-
-	draw()
+var el = {
+	step: document.getElementById('step'),
+	subtract: document.getElementById('subtract'),
+	accelerate: document.getElementById('accelerate')
 }
 
-init()
+el.step.addEventListener('input', function(event) {
+	opts.step = parseFloat(this.value)
+	draw()
+})
+el.subtract.addEventListener('input', function(event) {
+	opts.subtract = parseFloat(this.value)
+	draw()
+})
+el.accelerate.addEventListener('input', function(event) {
+	opts.accelerate = parseFloat(this.value)
+	draw()
+})
 
+document.getElementById('random').addEventListener('click', randomize)
 
 window.addEventListener('resize', function(event) {
 	var newWidth = window.innerWidth
@@ -151,6 +151,8 @@ window.addEventListener('resize', function(event) {
 		ctx.scale(ratio, ratio)
 	}
 })
+
+randomize()
 
 </script>
 

@@ -18,49 +18,75 @@
 <script type="text/javascript">
 'use strict'
 
-var depth = 16,
-	branchWidth = 24,
-	step = 0
-var newDepthPub, depthPub
 var canvas = document.getElementById('canvas'),
 	ctx = canvas.getContext('2d')
 
-function drawTree(ctx, startX, startY, length, angle, depth, branchWidth) {
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+ctx.globalCompositeOperation = 'lighten'
+
+var step = 0
+var newDepthPub, depthPub
+
+function drawTree(opts) {
+	opts = opts || {}
+
+	opts.startX = opts.startX || window.innerWidth / 2
+	opts.startY = opts.startY || window.innerHeight
+	opts.length = opts.length || Math.round(window.innerHeight / 8)
+	opts.angle  = opts.angle  || -Math.PI / 2
+	opts.depth  = opts.depth  || 16
+	opts.width  = opts.width  || 24
+
 	var rand = Math.random,
 		newDepth,
 		newLength, newAngle, maxBranch = 3,
-		endX, endY, maxAngle = 2 * Math.PI / 4,
+		endX, endY, maxAngle = 2 * Math.PI / 6,
 		subBranches, lenShrink
 
 	ctx.beginPath()
-	ctx.moveTo(startX, startY)
-	endX = startX + length * Math.cos(angle)
-	endY = startY + length * Math.sin(angle)
+	ctx.moveTo(opts.startX, opts.startY)
+	endX = opts.startX + opts.length * Math.cos(opts.angle)
+	endY = opts.startY + opts.length * Math.sin(opts.angle)
 	ctx.lineCap = 'round'
-	ctx.lineWidth = branchWidth
+	ctx.lineWidth = opts.width
 	ctx.lineTo(endX, endY)
 
-	if (depth <= 2) {
+	if (opts.depth <= 3) {
 		ctx.strokeStyle = 'rgb(0,' + (((rand() * 64) + 128) >> 0) + ',0)'
 	} else {
 		ctx.strokeStyle = 'rgb(' + (((rand() * 64) + 64) >> 0) + ',50, 25)'
 	}
 	ctx.stroke()
 
-	newDepth = depth - 1
+	newDepth = opts.depth - 1
 	if (!newDepth) return
 
-
 	subBranches = maxBranch - 1
-	branchWidth *= .75
+	opts.width *= .75
 
 	for (var i = 0; i < subBranches; i++) {
-		newAngle = angle + rand() * maxAngle - maxAngle * .5
-		newLength = length * (.7 + rand() * .3)
+		newAngle = opts.angle + rand() * maxAngle - maxAngle * .5
+		newLength = opts.length * (.7 + rand() * .3)
 		setTimeout(function() {
-			drawTree(ctx, endX, endY, newLength, newAngle, newDepth, branchWidth)
+			drawTree({
+				startX: endX,
+				startY: endY,
+				length: newLength,
+				angle: newAngle,
+				depth: newDepth,
+				width: opts.width
+			})
 			newDepthPub = newDepth
-			depthPub = depth
+			depthPub = opts.depth
 			step++
 		}, 100)
 	}
@@ -68,23 +94,13 @@ function drawTree(ctx, startX, startY, length, angle, depth, branchWidth) {
 
 function init() {
 	step = 0
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
-	ctx.globalCompositeOperation = 'lighter'
-	ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-	drawTree(ctx, window.innerWidth / 2, window.innerHeight, 120, -Math.PI / 1.5, depth, branchWidth)
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	drawTree()
 }
-
-function regrow() {
-	if (step < 65534) return
-	init()
-}
-
-document.querySelector('body').addEventListener('click', function(e) {
-	regrow()
-})
 
 init()
+
+setInterval(init, 10000)
 
 </script>
 

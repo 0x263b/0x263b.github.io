@@ -19,42 +19,36 @@
 	<div class="slider">
 		<label for="count">Point Pairs</label>
 		<input id="count" type="range" name="count" 
-			min="1" max="12" step="1" value="5"
-			oninput="changeParams('count', this.value);
-				countLabel.value = this.value">
-		<output name="countLabel" id="countLabel">5</output>
+			min="1" max="12" step="1">
+		<output name="countLabel" id="countLabel"></output>
 	</div>
 	<div class="slider">
 		<label for="radius">Radius Base</label>
 		<input id="radius" type="range" name="radius" 
-			min="0" max="400" step="20" value="150"
-			oninput="changeParams('radius', this.value);
-				radiusLabel.value = this.value">
-		<output name="radiusLabel" id="radiusLabel">150</output>
+			min="0" max="400" step="20">
+		<output name="radiusLabel" id="radiusLabel"></output>
 	</div>
 	<div class="slider">
 		<label for="spread">Radius Spread</label>
 		<input id="spread" type="range" name="spread" 
-			min="0" max="200" step="10" value="60"
-			oninput="changeParams('spread', this.value);
-				spreadLabel.value = this.value">
-		<output name="spreadLabel" id="spreadLabel">60</output>
+			min="0" max="200" step="10">
+		<output name="spreadLabel" id="spreadLabel"></output>
 	</div>
 	<div class="slider">
 		<label for="speed">Rotation Speed</label>
 		<input id="speed" type="range" name="speed" 
-			min="0" max="100" step="5" value="50"
-			oninput="changeParams('speed', this.value);
-				speedLabel.value = this.value">
-		<output name="speedLabel" id="speedLabel">50</output>
+			min="0" max="100" step="5">
+		<output name="speedLabel" id="speedLabel"></output>
 	</div>
 	<div class="slider">
 		<label for="pulse">Pulse Speed</label>
 		<input id="pulse" type="range" name="pulse" 
-			min="0" max="100" step="5" value="30"
-			oninput="changeParams('pulse', this.value);
-				pulseLabel.value = this.value">
-		<output name="pulseLabel" id="pulseLabel">30</output>
+			min="0" max="100" step="5">
+		<output name="pulseLabel" id="pulseLabel"></output>
+	</div>
+	<div class="slider">
+		<button id="random">Random</button>
+		<button id="clear">Clear</button>
 	</div>
 </div>
 
@@ -72,7 +66,6 @@ canvas.style.width = canvas.style.height = width + "px"
 ctx.scale(ratio, ratio)
 
 var opts,
-	constraints,
 	points,
 	tick
 
@@ -85,37 +78,26 @@ function init() {
 		pulse: 30
 	}
 
-	constraints = {
-		count: {
-			min: 1,
-			max: 12
-		},
-		radius: {
-			min: 0,
-			max: 400
-		},
-		spread: {
-			min: 0,
-			max: 200
-		},
-		speed: {
-			min: 0,
-			max: 100
-		},
-		pulse: {
-			min: 0,
-			max: 100
-		}
-	}
-
 	points = []
 	tick = 0
 
-	reset()
+	randomize()
 	render()
 }
 
 function reset() {
+	el.count.value  = opts.count
+	el.radius.value = opts.radius
+	el.spread.value = opts.spread
+	el.speed.value  = opts.speed
+	el.pulse.value  = opts.pulse
+
+	countLabel.value  = opts.count
+	radiusLabel.value = opts.radius
+	spreadLabel.value = opts.spread
+	speedLabel.value  = opts.speed
+	pulseLabel.value  = opts.pulse
+
 	points.length = 0
 	for (var i = 0; i < opts.count * 2; i++) {
 		var angle = i / (opts.count * 2) * Math.PI * 2
@@ -131,21 +113,16 @@ function reset() {
 	}
 }
 
-function changeParams(param, value) {
-	opts[param] = parseFloat(value)
-	reset()
-}
-
-function randInt(min, max) {
-	return Math.floor(min + Math.random() * (max - min + 1))
+function randStep(min, max, step) {
+	return min + (step * Math.floor(Math.random() * (max - min) / step))
 }
 
 function randomize() {
-	opts.count = randInt(constraints.count.min, constraints.count.max)
-	opts.radius = randInt(constraints.radius.min, constraints.radius.max)
-	opts.spread = randInt(constraints.spread.min, constraints.spread.max)
-	opts.speed = randInt(constraints.speed.min, constraints.speed.max)
-	opts.pulse = randInt(constraints.pulse.min, constraints.pulse.max)
+	opts.count  = randStep(1, 12, 1)
+	opts.radius = randStep(0, 400, 20)
+	opts.spread = randStep(0, 200, 10)
+	opts.speed  = randStep(0, 100, 5)
+	opts.pulse  = randStep(0, 100, 5)
 	reset()
 }
 
@@ -173,7 +150,7 @@ function draw() {
 	ctx.rotate(tick * (opts.speed / 3000))
 	ctx.beginPath()
 	for (var i = 0; i < opts.count * 2; i++) {
-		ctx[(i === 0) ? 'moveTo' : 'lineTo'](points[i].x, points[i].y)
+		ctx.lineTo(points[i].x, points[i].y)
 	}
 	ctx.closePath()
 
@@ -199,7 +176,39 @@ function render() {
 	requestAnimationFrame(render)
 }
 
-init()
+var el = {
+	count: document.getElementById('count'),
+	radius: document.getElementById('radius'),
+	spread: document.getElementById('spread'),
+	speed: document.getElementById('speed'),
+	pulse: document.getElementById('pulse'),
+}
+
+el.count.addEventListener('input', function(event) {
+	opts.count = parseInt(this.value)
+	reset()
+})
+el.radius.addEventListener('input', function(event) {
+	opts.radius = parseInt(this.value)
+	reset()
+})
+el.spread.addEventListener('input', function(event) {
+	opts.spread = parseInt(this.value)
+	reset()
+})
+el.speed.addEventListener('input', function(event) {
+	opts.speed = parseInt(this.value)
+	reset()
+})
+el.pulse.addEventListener('input', function(event) {
+	opts.pulse = parseInt(this.value)
+	reset()
+})
+
+document.getElementById('random').addEventListener('click', randomize)
+document.getElementById('clear').addEventListener('click', function(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+})
 
 window.addEventListener('resize', function(event) {
 	var newWidth = window.innerWidth
@@ -216,6 +225,8 @@ window.addEventListener('resize', function(event) {
 		ctx.scale(ratio, ratio)
 	}
 })
+
+init()
 
 </script>
 

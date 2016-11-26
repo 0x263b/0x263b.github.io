@@ -6,22 +6,20 @@
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
-		<title>Julia Fractal</title>
+		<title>Fractals</title>
 
 		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
 
 	</head>
 
-	<body class="canvas canvas_julia canvas_julia_index">
+	<body class="canvas canvas_fractals canvas_fractals_index">
 		<canvas id="canvas"></canvas>
 
 <div class="controls">
 	<div class="slider">
 		<label for="fractal">Fractcal</label>
 		<div class="select">
-			<select id="fractal" style="width:130px"
-				onchange="changeFunction(this.value)"
-				oninput="changeFunction(this.value)">
+			<select id="fractal" style="width:130px">
 				<option selected>Julia</option>
 				<option>MandelBrot</option>
 			</select>
@@ -32,37 +30,29 @@
 	<div class="slider">
 		<label for="ka">ka: </label>
 		<input type="range" id="ka" name="ka" 
-			min="-1" max="1" step=".01" value="0.31"
-			oninput="changeParams('ka', this.value);
-				kaLabel.value = this.value">
-		<output name="kaLabel" id="kaLabel">0.31</output>
+			min="-1" max="1" step=".01">
+		<output name="kaLabel" id="kaLabel"></output>
 	</div>
 
 	<div class="slider">
 		<label for="kb">kb: </label>
 		<input type="range" id="kb" name="kb" 
-			min="-1" max="1" step=".01" value="-0.03"
-			oninput="changeParams('kb', this.value);
-				kbLabel.value = this.value">
-		<output name="kbLabel" id="kbLabel">-0.03</output>
+			min="-1" max="1" step=".01">
+		<output name="kbLabel" id="kbLabel"></output>
 	</div>
 
 	<div class="slider">
 		<label>From: </label>
 		<input type="range" id="from" name="from"
-			min="-5" max="5" step=".01" value="-2"
-			oninput="changeParams('from', this.value);
-				fromLabel.value = this.value">
-		<output name="fromLabel" id="fromLabel">-2</output>
+			min="-5" max="5" step=".01">
+		<output name="fromLabel" id="fromLabel"></output>
 	</div>
 
 	<div class="slider">
 		<label for="to">To: </label>
 		<input type="range" id="to" name="to"
-			min="-5" max="5" step=".01" value="2"
-			oninput="changeParams('to', this.value);
-				toLabel.value = this.value">
-		<output name="toLabel" id="toLabel">2</output>
+			min="-5" max="5" step=".01">
+		<output name="toLabel" id="toLabel"></output>
 	</div>
 </div>
 
@@ -87,10 +77,10 @@ var rgb, R, G, B
 
 var opts = {
 	fractal: 'Julia',
-	ka: 0.31,
-	kb: -0.03,
-	from: -2,
-	to: 2
+	ka: -0.02,
+	kb: 0.69,
+	from: -1.5,
+	to: 1.5
 }
 
 var rad = Math.PI / 180
@@ -179,12 +169,14 @@ function Mandelbrot(max_iterations, radius, length) {
 			var a = mmap(x, imgData.width, radius, length)
 			var b = mmap(y, imgData.width, radius, length)
 
-			var l = 0, m = 0, n = 0
+			var l = 0, 
+				m = 0, 
+				n = 0
 
 			while (l * l + m * m <= length && n < max_iterations) {
-				var cc = l * l - m * m + a
+				var cc = l * l - m * m + a + opts.ka
 
-				m = radius * l * m + b
+				m = radius * l * m + b + opts.kb
 				l = cc
 				n++
 			}
@@ -211,25 +203,6 @@ function Mandelbrot(max_iterations, radius, length) {
 	ctx.putImageData(imgData, 0, 0)
 }
 
-function render() {
-	ctx.clearRect(0, 0, canvas.height, canvas.width)
-	if (opts.fractal === 'Julia') {
-		JuliaSet(max_iterations, opts.from, opts.to)
-	} else {
-		Mandelbrot(max_iterations, opts.from, opts.to)
-	}
-}
-
-function changeParams(param, value) {
-	opts[param] = parseFloat(value)
-	render()
-}
-
-function changeFunction(fname) {
-	opts.fractal = fname
-	render()
-}
-
 function map(n, a, b, from, to) {
 	var d = b - a
 	var _d = to - from
@@ -240,7 +213,69 @@ function mmap(p, s, r, l) {
 	return (p - s / r) * l / s
 }
 
-render()
+function render() {
+	ctx.clearRect(0, 0, canvas.height, canvas.width)
+
+	if (opts.fractal === 'Julia') {
+		JuliaSet(max_iterations, opts.from, opts.to)
+	} else {
+		Mandelbrot(max_iterations, opts.from, opts.to)
+	}
+
+	el.ka.value = opts.ka
+	el.kb.value = opts.kb
+	el.from.value = opts.from
+	el.to.value = opts.to
+
+	kaLabel.value = opts.ka
+	kbLabel.value = opts.kb
+	fromLabel.value = opts.from
+	toLabel.value = opts.to
+}
+
+var el = {
+	fractal: document.getElementById('fractal'),
+	ka: document.getElementById('ka'),
+	kb: document.getElementById('kb'),
+	from: document.getElementById('from'),
+	to: document.getElementById('to')
+}
+
+el.fractal.addEventListener('input', function(event) {
+	if (this.value === 'Julia') {
+		opts.ka = -0.02
+		opts.kb = 0.69
+		opts.from = -1.5
+		opts.to = 1.5
+	} else {
+		opts.ka = -0.5
+		opts.kb = 0
+		opts.from = 2
+		opts.to = 4
+	}
+	opts.fractal = this.value
+	render()
+})
+
+el.ka.addEventListener('input', function(event) {
+	opts.ka = parseFloat(this.value)
+	render()
+})
+
+el.kb.addEventListener('input', function(event) {
+	opts.kb = parseFloat(this.value)
+	render()
+})
+
+el.from.addEventListener('input', function(event) {
+	opts.from = parseFloat(this.value)
+	render()
+})
+
+el.to.addEventListener('input', function(event) {
+	opts.to = parseFloat(this.value)
+	render()
+})
 
 window.addEventListener('resize', function(event) {
 	var newWidth = window.innerWidth
@@ -260,6 +295,8 @@ window.addEventListener('resize', function(event) {
 	pixels = imgData.data
 	render()
 })
+
+render()
 
 </script>
 </body>

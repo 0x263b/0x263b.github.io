@@ -6,7 +6,7 @@
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 		<meta name="theme-color" content="#000000">
 
-		<title>Maze</title>
+		<title>Three.js Maze</title>
 
 		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
 
@@ -458,7 +458,7 @@ var PI2 = 2 * Math.PI,
 
 // maze size
 
-var mazeSize = 11000
+var mazeSize = 10000
 
 function createPreview() {
 	var canvas = document.querySelector('#canvas')
@@ -492,7 +492,7 @@ function createScene() {
 
 	currentTime = 0
 
-	var cameraBoxGeo = new THREE.CubeGeometry(10, 10, 10)
+	var cameraBoxGeo = new THREE.CubeGeometry(0, 0, 0)
 	var cameraBoxMat = new THREE.MeshBasicMaterial({
 		wireframe: true,
 		color: 0x0f0
@@ -526,7 +526,7 @@ function createScene() {
 			shading: THREE.FlatShading
 		})
 	))
-	exit.position.set(-mazeSize / 2 + 400, 500, -mazeSize / 2 + 400)
+	exit.position.set(-mazeSize / 2 + 500, 500, -mazeSize / 2 + 500)
 	sceneTemp.add(exit)
 
 	// ceiling plane
@@ -577,7 +577,7 @@ function createScene() {
 function mazeInit() {
 	var maze2DSize = mazeSize / 1000
 	maze = new Maze(maze2DSize, maze2DSize, 1000)
-	maze.paint2D(ctx, scale)
+	// maze.paint2D(ctx, scale)
 	maze.paint()
 }
 
@@ -598,8 +598,6 @@ function init() {
 }
 
 
-
-
 var cameraRotationChanged = true
 
 var angle
@@ -613,13 +611,16 @@ var movXRL,
 var movementVec = new THREE.Vector3(0, 0, 0)
 var movementVecRL = new THREE.Vector3(0, 0, 0)
 
+var steps = 0
+
 function animate() {
 	requestAnimationFrame(animate)
 	render()
 
-	exit.rotation.x += 0.005;
-	exit.rotation.y += 0.005;
+	exit.rotation.x += 0.005
+	exit.rotation.y += 0.005
 
+	/*
 	if (keyEvents.up || keyEvents.down || keyEvents.right || keyEvents.left) {
 		// check intersections with walls
 		if (cameraRotationChanged) {
@@ -648,12 +649,12 @@ function animate() {
 			movementVec.z = movZ
 		}
 		if (keyEvents.left) {
-			camera.rotation.y += 0.05
+			camera.rotation.y = (camera.rotation.y + 0.05) % (Math.PI * 2)
 			cameraRotationChanged = true
 			maze.paint2D(ctx, scale)
 		}
 		if (keyEvents.right) {
-			camera.rotation.y -= 0.05
+			camera.rotation.y = (camera.rotation.y - 0.05) % (Math.PI * 2)
 			cameraRotationChanged = true
 			maze.paint2D(ctx, scale)
 		}
@@ -678,9 +679,9 @@ function animate() {
 		}
 
 		// paint 2d maze to canvas			
-		maze.paint2D(ctx, scale)
-	}
-
+		// maze.paint2D(ctx, scale)
+	} */
+	
 	var endDif = endPLight.position.distanceTo(camera.position)
 
 	if (endDif < 300) {
