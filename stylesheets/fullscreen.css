@@ -1,12 +1,11 @@
-@charset "UTF-8";
 * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box; }
-
-*::after {
-  box-sizing: border-box; }
-
-*::before {
-  box-sizing: border-box; }
+  *:after {
+    box-sizing: border-box; }
+  *:before {
+    box-sizing: border-box; }
 
 html {
   width: 100%;
@@ -27,24 +26,15 @@ body {
   right: 10px;
   z-index: 10;
   cursor: pointer;
-  font: normal 21px/30px BlinkMacSystemFont, -apple-system, "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
-  display: inline-block;
-  padding: 0 5px; }
-
-#fullscreen:after {
-  content: "⤢"; }
-
-:-webkit-full-screen #fullscreen:after {
-  content: "╳"; }
-
-:-moz-full-screen #fullscreen:after {
-  content: "╳"; }
-
-:-ms-fullscreen #fullscreen:after {
-  content: "╳"; }
-
-:fullscreen #fullscreen:after {
-  content: "╳"; }
+  display: inline-block; }
+  #fullscreen svg {
+    width: 32px;
+    height: 32px; }
+    #fullscreen svg path {
+      fill: rgba(255, 255, 255, 0.5);
+      transition: fill 0.1s ease-in; }
+    #fullscreen svg:hover path {
+      fill: white; }
 
 #signature {
   position: fixed;
@@ -53,21 +43,28 @@ body {
   font: normal 16px/21px BlinkMacSystemFont, -apple-system, "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
   display: inline-block;
   padding: 0 5px; }
+  #signature a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.5); }
+    #signature a:hover {
+      color: white; }
 
-:-webkit-full-screen #signature {
+:-webkit-full-screen #signature,
+:-webkit-full-screen #fullscreen {
   display: none; }
 
-:-moz-full-screen #signature {
+:-moz-full-screen #signature,
+:-moz-full-screen #fullscreen {
   display: none; }
 
-:-ms-fullscreen #signature {
+:-ms-fullscreen #signature,
+:-ms-fullscreen #fullscreen {
   display: none; }
 
-:fullscreen #signature {
+:fullscreen #signature,
+:fullscreen #fullscreen {
   display: none; }
 
-.canvas_dvd .x, .canvas_dvd .y {
-  display: inline-block; }
 .canvas_dvd .logo {
   fill: cyan;
   transition: fill 0.2s ease-in; }
