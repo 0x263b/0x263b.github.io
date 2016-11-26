@@ -28,7 +28,7 @@
 
 var el = document.getElementById('dvd')
 
-var vw = window.innerWidth - (el.offsetWidth || 153),
+var vw = window.innerWidth  - (el.offsetWidth  || 153),
 	vh = window.innerHeight - (el.offsetHeight || 69)
 
 var ex = 0,
@@ -38,7 +38,7 @@ var dirx = 1,
 	diry = 1
 
 function newColor() {
-	return "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)"
+	return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
 }
 
 function translate() {
@@ -62,7 +62,7 @@ function translate() {
 translate()
 
 window.onresize = function(event) {
-	vw = window.innerWidth - (el.offsetWidth || 153),
+	vw = window.innerWidth  - (el.offsetWidth  || 153),
 	vh = window.innerHeight - (el.offsetHeight || 69)
 }
 

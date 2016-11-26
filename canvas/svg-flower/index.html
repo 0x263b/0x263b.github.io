@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>SVG Flower</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="canvas canvas_svg-flower canvas_svg-flower_index">
+		<div id="svg"></div>
+
+<div class="controls">
+	<div class="slider">
+		<label for="step">Step</label>
+		<input id="step" type="range" name="count" 
+			min="1" max="355" step="0.5">
+		<output name="stepLabel" id="stepLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="subtract">subtract</label>
+		<input id="subtract" type="range" name="count" 
+			min="-5" max="5" step="0.01">
+		<output name="subtractLabel" id="subtractLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="accelerate">accelerate</label>
+		<input id="accelerate" type="range" name="count" 
+			min="0" max="5" step="0.01">
+		<output name="accelerateLabel" id="accelerateLabel"></output>
+	</div>
+</div>
+
+<script>
+'use strict'
+
+function toRadians(angle) {
+	return angle * (Math.PI / 180)
+}
+
+function render() {
+	var svg = {}
+	svg.width = window.innerWidth > 600 ? 600 : window.innerWidth
+	svg.height = svg.width
+
+	var rx = svg.width / 2,
+		ry = svg.height / 2,
+		sub = 1,
+		angle = 0,
+		subtract = opts.subtract,
+		accelerate = opts.accelerate,
+		maxrun = 2016,
+		count = 0,
+		d = ""
+
+	do {
+		sub += subtract
+		angle += opts.step
+		var x = Math.cos(toRadians(angle)) * (rx - sub) + rx
+		var y = Math.sin(toRadians(angle)) * (ry - sub) + ry
+		d += (d === "") ? "M " + x + " " + y + " L " : x + " " + y + " "
+		subtract = subtract + accelerate
+		maxrun--
+		count++
+	} while ((sub - subtract) < rx && maxrun > 0)
+
+	return `<svg width="${svg.width}px" height="${svg.height}px" viewBox="0 0 ${svg.width} ${svg.height}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns_xlink="http://www.w3.org/1999/xlink"><path d="${d}" stroke-width=".2px" stroke="white" fill="none" /></svg>`
+}
+
+
+var opts = {
+	step: 179.5,
+	subtract: 0.19,
+	accelerate: 0
+}
+
+document.getElementById('step').addEventListener('input', function(event) {
+	opts.step = parseFloat(this.value)
+	draw()
+})
+document.getElementById('subtract').addEventListener('input', function(event) {
+	opts.subtract = parseFloat(this.value)
+	draw()
+})
+document.getElementById('accelerate').addEventListener('input', function(event) {
+	opts.accelerate = parseFloat(this.value)
+	draw()
+})
+
+function draw() {
+	stepLabel.value = opts.step
+	subtractLabel.value = opts.subtract
+	accelerateLabel.value = opts.accelerate
+	document.getElementById('svg').innerHTML = render()
+}
+
+draw()
+
+</script>
+
+	</body>
+</html>

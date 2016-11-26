@@ -69,5 +69,5 @@ body {
 .canvas_dvd .x, .canvas_dvd .y {
   display: inline-block; }
 .canvas_dvd .logo {
-  fill: white;
+  fill: cyan;
   transition: fill 0.2s ease-in; }

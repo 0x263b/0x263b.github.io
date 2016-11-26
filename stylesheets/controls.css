@@ -19,6 +19,10 @@ canvas {
   margin: 0 auto;
   background-color: #000; }
 
+#svg {
+  margin: 0 auto;
+  max-width: 600px; }
+
 .controls {
   max-width: 350px;
   margin: 0 auto 1em;
