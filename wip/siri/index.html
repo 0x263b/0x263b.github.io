@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Siri</title>
+
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+	</head>
+
+	<body class="wip wip_siri wip_siri_index">
+		<canvas id='canvas'></canvas>
+
+<script>
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+
+function Curve(color) {
+	this.color = color
+	this.tick = 0
+
+	this.respawn()
+}
+
+Curve.prototype.respawn = function() {
+	this.amplitude = 0.3 + Math.random() * 0.7
+	this.seed = Math.random()
+	this.open_class = 2 + (Math.random() * 3) | 0
+}
+
+Curve.prototype.equation = function(i) {
+	var p = this.tick
+	var y = -1 * Math.abs(Math.sin(p)) * amplitude * this.amplitude * max_height * Math.pow(1 / (1 + Math.pow(this.open_class * i, 2)), 2)
+	if (Math.abs(y) < 0.001) {
+		this.respawn()
+	}
+	return y
+}
+
+Curve.prototype._draw = function(m) {
+	this.tick += speed * (1 - 0.5 * Math.sin(this.seed * Math.PI))
+
+	ctx.beginPath()
+
+	var x_base = width / 2 + (-width / 4 + this.seed * (width / 2))
+	var y_base = height / 2
+
+	var x, y, x_init
+
+	var i = -3
+	while (i <= 3) {
+		x = x_base + i * width / 4
+		y = y_base + (m * this.equation(i))
+		x_init = x_init || x
+		ctx.lineTo(x, y)
+		i += 0.01
+	}
+
+	var h = Math.abs(this.equation(0))
+	var gradient = ctx.createRadialGradient(x_base, y_base, h * 1.15, x_base, y_base, h * 0.3)
+	gradient.addColorStop(0, 'rgba(' + this.color.join(',') + ',0.4)')
+	gradient.addColorStop(1, 'rgba(' + this.color.join(',') + ',0.2)')
+
+	ctx.fillStyle = gradient
+
+	ctx.lineTo(x_init, y_base)
+	ctx.closePath()
+
+	ctx.fill()
+}
+
+Curve.prototype.draw = function() {
+	this._draw(-1)
+	this._draw(1)
+}
+
+var tick = 0,
+	wave_width = width,
+	wave_height = width / 2,
+	max_height = width / 10,
+	speed = 0.075,
+	amplitude = 1,
+	curves = new Array()
+
+var colors = [
+	[32, 133, 252],
+	[94, 252, 169],
+	[253, 71, 103]
+]
+
+function draw() {
+	ctx.globalCompositeOperation = 'destination-out'
+	ctx.fillRect(0, 0, width, height)
+	ctx.globalCompositeOperation = 'lighter'
+
+	for (var i = 0, len = curves.length; i < len; i++) {
+		curves[i].draw()
+	}
+
+	requestAnimationFrame(draw)
+}
+
+function init() {
+	for (var i = 0; i < colors.length; i++) {
+		var color = colors[i]
+		for (var j = 0; j < (3 * Math.random()) | 0; j++) {
+			curves.push(new Curve(color))
+		}
+	}
+	draw()
+}
+
+init()
+
+</script>
+
+<div id="fullscreen">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M89,36c1.104,0,2-0.896,2-2V11c0-1.104-0.896-2-2-2H66c-1.104,0-2,0.896-2,2s0.896,2,2,2h18.137  L57.761,39.376c-0.781,0.781-0.781,2.047,0,2.829c0.39,0.39,0.902,0.585,1.414,0.585s1.024-0.195,1.414-0.585L87,15.794V34  C87,35.104,87.896,36,89,36z"></path><path d="M43.414,56.586c-0.78-0.781-2.048-0.781-2.828,0L14,83.172V65c0-1.104-0.896-2-2-2s-2,0.896-2,2v23  c0,1.104,0.896,2,2,2h23c1.104,0,2-0.896,2-2s-0.896-2-2-2H16.829l26.585-26.586C44.195,58.633,44.195,57.367,43.414,56.586z"></path></svg>
+</div>
+<div id="signature"><a href="/">Abram</a></div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
+
+	</body>
+</html>

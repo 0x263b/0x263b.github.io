@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Spirals Animated</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="interactive interactive_spirals-animated interactive_spirals-animated_index">
+		<canvas id="canvas"></canvas>
+
+<div class="controls">
+	<div class="slider">
+		<label for="count">Point Pairs</label>
+		<input id="count" type="range" name="count" 
+			min="1" max="12" step="1">
+		<output name="countLabel" id="countLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="radius">Radius Base</label>
+		<input id="radius" type="range" name="radius" 
+			min="0" max="400" step="20">
+		<output name="radiusLabel" id="radiusLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="spread">Radius Spread</label>
+		<input id="spread" type="range" name="spread" 
+			min="0" max="200" step="10">
+		<output name="spreadLabel" id="spreadLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="speed">Rotation Speed</label>
+		<input id="speed" type="range" name="speed" 
+			min="0" max="100" step="5">
+		<output name="speedLabel" id="speedLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="pulse">Pulse Speed</label>
+		<input id="pulse" type="range" name="pulse" 
+			min="0" max="100" step="5">
+		<output name="pulseLabel" id="pulseLabel"></output>
+	</div>
+	<div class="slider">
+		<button id="random">Random</button>
+		<button id="clear">Clear</button>
+	</div>
+</div>
+
+<script>
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = Math.min(window.innerWidth, 600)
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + "px"
+ctx.scale(ratio, ratio)
+
+var opts,
+	points,
+	tick
+
+function init() {
+	opts = {
+		count: 5,
+		radius: 150,
+		spread: 60,
+		speed: 50,
+		pulse: 30
+	}
+
+	points = []
+	tick = 0
+
+	randomize()
+	render()
+}
+
+function reset() {
+	el.count.value  = opts.count
+	el.radius.value = opts.radius
+	el.spread.value = opts.spread
+	el.speed.value  = opts.speed
+	el.pulse.value  = opts.pulse
+
+	countLabel.value  = opts.count
+	radiusLabel.value = opts.radius
+	spreadLabel.value = opts.spread
+	speedLabel.value  = opts.speed
+	pulseLabel.value  = opts.pulse
+
+	points.length = 0
+	for (var i = 0; i < opts.count * 2; i++) {
+		var angle = i / (opts.count * 2) * Math.PI * 2
+		points.push({
+			alt: i % 2 !== 0 ? true : false,
+			x: 0,
+			y: 0,
+			x1: Math.cos(angle) * (opts.radius - opts.spread),
+			y1: Math.sin(angle) * (opts.radius - opts.spread),
+			x2: Math.cos(angle) * (opts.radius + opts.spread),
+			y2: Math.sin(angle) * (opts.radius + opts.spread)
+		})
+	}
+}
+
+function randStep(min, max, step) {
+	return min + (step * Math.floor(Math.random() * (max - min) / step))
+}
+
+function randomize() {
+	opts.count  = randStep(1, 12, 1)
+	opts.radius = randStep(0, 400, 20)
+	opts.spread = randStep(0, 200, 10)
+	opts.speed  = randStep(0, 100, 5)
+	opts.pulse  = randStep(0, 100, 5)
+	reset()
+}
+
+function step() {
+	for (var i = 0; i < opts.count * 2; i++) {
+		var p = points[i],
+			sin = Math.sin(tick * (opts.pulse / 1000)),
+			cos = Math.cos(tick * (opts.pulse / 1000))
+		if (p.alt) {
+			p.x = p.x1 + sin * (p.x2 - p.x1) / 2
+			p.y = p.y1 + sin * (p.y2 - p.y1) / 2
+		} else {
+			p.x = p.x1 + cos * (p.x1 - p.x2) / 2
+			p.y = p.y1 + cos * (p.y1 - p.y2) / 2
+		}
+	}
+	tick++
+}
+
+function draw() {
+	ctx.save()
+
+	ctx.translate(width / 2, width / 2)
+	ctx.rotate(opts.count % 2 ? Math.PI / (opts.count * 2) : Math.PI / (opts.count * 1))
+	ctx.rotate(tick * (opts.speed / 3000))
+	ctx.beginPath()
+	for (var i = 0; i < opts.count * 2; i++) {
+		ctx.lineTo(points[i].x, points[i].y)
+	}
+	ctx.closePath()
+
+	ctx.globalCompositeOperation = 'lighter'
+	ctx.lineWidth = 1
+	ctx.strokeStyle = 'hsla(' + (tick + 160) + ', 80%, 50%, 0.5)'
+	ctx.stroke()
+
+	// Slowly erase
+	ctx.globalCompositeOperation = 'destination-out'
+	ctx.lineWidth = 2
+	ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)'
+	ctx.stroke()
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
+	ctx.fill()
+
+	ctx.restore()
+}
+
+function render() {
+	step()
+	draw()
+	requestAnimationFrame(render)
+}
+
+var el = {
+	count: document.getElementById('count'),
+	radius: document.getElementById('radius'),
+	spread: document.getElementById('spread'),
+	speed: document.getElementById('speed'),
+	pulse: document.getElementById('pulse'),
+}
+
+el.count.addEventListener('input', function(event) {
+	opts.count = parseInt(this.value)
+	reset()
+})
+el.radius.addEventListener('input', function(event) {
+	opts.radius = parseInt(this.value)
+	reset()
+})
+el.spread.addEventListener('input', function(event) {
+	opts.spread = parseInt(this.value)
+	reset()
+})
+el.speed.addEventListener('input', function(event) {
+	opts.speed = parseInt(this.value)
+	reset()
+})
+el.pulse.addEventListener('input', function(event) {
+	opts.pulse = parseInt(this.value)
+	reset()
+})
+
+document.getElementById('random').addEventListener('click', randomize)
+document.getElementById('clear').addEventListener('click', function(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+})
+
+window.addEventListener('resize', function(event) {
+	var newWidth = window.innerWidth
+	if (newWidth === width) return
+	if (newWidth < 600) {
+		width = newWidth
+		canvas.width = canvas.height = width * ratio
+		canvas.style.width = canvas.style.height = width + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600) {
+		width = newWidth
+		canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
+	}
+})
+
+init()
+
+</script>
+
+	</body>
+</html>

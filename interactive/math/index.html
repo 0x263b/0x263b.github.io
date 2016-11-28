@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Math</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="interactive interactive_math interactive_math_index">
+		<canvas id="canvas"></canvas>
+
+<div class="controls">
+	<div class="slider">
+		<label for="amount">Amount of Particles</label>
+		<input id="amount" type="range" name="amount" 
+			min="10" max="2000" step="50" value="760"
+			oninput="changeParams('amount', this.value);
+				amountLabel.value = this.value">
+		<output name="amountLabel" id="amountLabel">760</output>
+	</div>
+	<div class="slider">
+		<label for="increase">Speed</label>
+		<input id="increase" type="range" name="increase" 
+			min="0" max="0.05" step="0.001" value="0.01"
+			oninput="changeParams('increase', this.value);
+				valueLabel.value = this.value">
+		<output name="valueLabel" id="valueLabel">0.01</output>
+	</div>
+	<div class="slider">
+		<label for="size">Particle Size</label>
+		<input id="size" type="range" name="size" 
+			min="0" max="10" step="0.5" value="2"
+			oninput="changeParams('size', this.value);
+				sizeLabel.value = this.value">
+		<output name="sizeLabel" id="sizeLabel">2</output>
+	</div>
+	<div class="slider">
+		<label for="height">Wave Height</label>
+		<input id="height" type="range" name="height" 
+			min="1" max="250" step="1" value="80"
+			oninput="changeParams('height', this.value);
+				heightLabel.value = this.value">
+		<output name="heightLabel" id="heightLabel">80</output>
+	</div>
+	<div class="slider">
+		<label for="delay_factor">Delay factor</label>
+		<input id="delay_factor" type="range" name="height" 
+			min="1" max="10" step="0.1" value="2.5"
+			oninput="changeParams('delay_factor', this.value);
+				delayLabel.value = this.value">
+		<output name="delayLabel" id="delayLabel">2.5</output>
+	</div>
+	<div class="slider">
+		<label for="waveform">Waveform</label>
+		<div class="select">
+			<select id="waveform" 
+				onchange="changeFunction(this.value)" 
+				oninput="changeFunction(this.value)">
+				<option selected>Sin</option>
+				<option>Cos</option>
+				<option>Tan</option>
+				<option>Csc</option>
+				<option>Sec</option>
+				<option>Cot</option>
+			</select>
+			<em>▾</em>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = Math.min(window.innerWidth, 600)
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + "px"
+ctx.scale(ratio, ratio)
+
+var dt = 0
+var opts = {
+	height: 80,
+	amount: 760,
+	increase: 0.01,
+	size: 2,
+	decreasing_factor: 1,
+	delay_factor: 2.5
+}
+
+function toRGB(h, s, l) {
+	var r, g, b
+	h /= 360
+	s /= 100
+	l /= 100
+
+	if (s === 0) {
+		r = g = b = l
+	} else {
+		function hue2rgb(p, q, t) {
+			if (t < 0) t += 1
+			if (t > 1) t -= 1
+			if (t < 1 / 6) return p + (q - p) * 6 * t
+			if (t < 1 / 2) return q
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+			return p
+		}
+
+		var q = l < 0.5 ? l * (1 + s) : l + s - l * s
+		var p = 2 * l - q
+		r = hue2rgb(p, q, h + 1 / 3)
+		g = hue2rgb(p, q, h)
+		b = hue2rgb(p, q, h - 1 / 3)
+	}
+
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
+}
+
+function valueFunction(_dt, _i, _df) {
+	return Math.sin((_dt + _i) * _df)
+}
+
+var colors = []
+var color_index = 0
+var t = 0.0016
+for (var j = 0; j < canvas.width; j++) {
+	var rgb = toRGB((t * 360 * 10) % 360, 65, 50)
+	colors.push(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`)
+	t += 0.0016
+}
+
+function changeParams(param, value) {
+	opts[param] = parseFloat(value)
+}
+
+function changeFunction(fname) {
+	if (fname == "Sin") {
+		valueFunction = function(_dt, _i, _df) {
+			return Math.sin((_dt + _i) * _df)
+		}
+		return
+	} else if (fname == "Cos") {
+		valueFunction = function(_dt, _i, _df) {
+			return Math.cos((_dt + _i) * _df)
+		}
+		return
+	} else if (fname == "Tan") {
+		valueFunction = function(_dt, _i, _df) {
+			return Math.tan((_dt + _i) * _df)
+		}
+		return
+	} else if (fname == "Sec") {
+		valueFunction = function(_dt, _i, _df) {
+			return 1 / Math.cos((_dt + _i) * _df)
+		}
+		return
+	} else if (fname == "Csc") {
+		valueFunction = function(_dt, _i, _df) {
+			return 1 / Math.sin((_dt + _i) * _df)
+		}
+		return
+	} else if (fname == "Cot") {
+		valueFunction = function(_dt, _i, _df) {
+			return 1 / Math.tan((_dt + _i) * _df)
+		}
+		return
+	}
+}
+
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+	// creating 100 boxes
+	for (var i = 0; i < opts.amount; i++) {
+		var inc = valueFunction(dt, i, opts.delay_factor) * opts.height / opts.decreasing_factor
+		if (i % 10 == 0) {
+			ctx.fillStyle = colors[color_index]
+			color_index++
+		}
+		// position relative to canvas size
+		// i : opts.amount = pos : width -> pos = i * width/opts.amount
+		//ctx.fillRect(i, 250+inc, opts.size, opts.size)
+		ctx.fillRect((i * width / opts.amount), (width/2) + inc, opts.size, opts.size)
+	}
+	// resetting color index
+	color_index = 0
+
+	requestAnimationFrame(render)
+	dt += opts.increase
+}
+
+render()
+
+window.addEventListener('resize', function(event) {
+	var newWidth = window.innerWidth
+	if (newWidth === width) return
+	if (newWidth < 600) {
+		width = newWidth
+		canvas.width = canvas.height = width * ratio
+		canvas.style.width = canvas.style.height = width + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600) {
+		width = newWidth
+		canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
+	}
+})
+
+</script>
+</body>
+
+	</body>
+</html>

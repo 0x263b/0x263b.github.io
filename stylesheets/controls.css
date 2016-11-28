@@ -271,19 +271,19 @@ option {
   option:checked {
     color: white; }
 
-.canvas_mandala main {
+.interactive_mandala main {
   max-width: 600px;
   margin: auto;
   display: block;
   position: relative; }
-  .canvas_mandala main:before {
+  .interactive_mandala main:before {
     display: block;
     content: '';
     padding-top: 100%; }
-.canvas_mandala canvas {
+.interactive_mandala canvas {
   position: absolute;
   top: 0;
   left: 0; }
-.canvas_mandala #canvas {
+.interactive_mandala #canvas {
   z-index: 2;
   background-color: transparent; }

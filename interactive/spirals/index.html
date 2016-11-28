@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Spirals</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="interactive interactive_spirals interactive_spirals_index">
+		<canvas id="canvas"></canvas>
+
+<div class="controls">
+	<div class="slider">
+		<label for="step">Step</label>
+		<input id="step" type="range" name="count" 
+			min="0" max="360" step="0.5">
+		<output name="stepLabel" id="stepLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="subtract">Subtract</label>
+		<input id="subtract" type="range" name="count" 
+			min="-5" max="5" step="0.01">
+		<output name="subtractLabel" id="subtractLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="accelerate">Accelerate</label>
+		<input id="accelerate" type="range" name="count" 
+			min="-1" max="1" step="0.01">
+		<output name="accelerateLabel" id="accelerateLabel"></output>
+	</div>
+	<div class="slider">
+		<button id="random">Randomize</button>
+	</div>
+</div>
+
+<script>
+'use strict'
+var canvas = document.getElementById('canvas')
+var ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = Math.min(window.innerWidth, 600)
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + 'px'
+ctx.scale(ratio, ratio)
+
+function toRadians(angle) {
+	return angle * (Math.PI / 180)
+}
+
+function render() {
+	ctx.fillStyle = 'black'
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+	var rx = canvas.width / 2 / ratio,
+		ry = canvas.height / 2 / ratio,
+		sub = 1,
+		angle = 0,
+		subtract = opts.subtract,
+		accelerate = opts.accelerate,
+		maxrun = 2000,
+		count = 0
+
+	ctx.lineWidth = 0.5
+	ctx.beginPath()
+
+	do {
+		sub += subtract
+		angle += opts.step
+		var x = Math.cos(toRadians(angle)) * (rx - sub) + rx
+		var y = Math.sin(toRadians(angle)) * (ry - sub) + ry
+		
+		ctx.lineTo(x, y)
+
+		subtract = subtract + accelerate
+		maxrun--
+		count++
+	} while ((sub - subtract) < rx && maxrun > 0)
+
+	ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'
+	ctx.stroke()
+}
+
+var opts = {
+	step: 179.5,
+	subtract: 0.19,
+	accelerate: 0
+}
+
+function randStep(min, max, step) {
+	return min + (step * Math.floor(Math.random() * (max - min) / step))
+}
+
+function randomize() {
+	opts.step = randStep(5, 355, 0.5)
+	opts.subtract = randStep(-5, 5, 0.5)
+	// opts.accelerate = randStep(-1, 1, 0.1)
+
+	draw()
+}
+
+function draw() {
+	el.step.value = opts.step
+	el.subtract.value = opts.subtract
+	el.accelerate.value = opts.accelerate
+
+	stepLabel.value = opts.step.toFixed(1)
+	subtractLabel.value = opts.subtract.toFixed(2)
+	accelerateLabel.value = opts.accelerate.toFixed(2)
+	render()
+}
+
+var el = {
+	step: document.getElementById('step'),
+	subtract: document.getElementById('subtract'),
+	accelerate: document.getElementById('accelerate')
+}
+
+el.step.addEventListener('input', function(event) {
+	opts.step = parseFloat(this.value)
+	draw()
+})
+el.subtract.addEventListener('input', function(event) {
+	opts.subtract = parseFloat(this.value)
+	draw()
+})
+el.accelerate.addEventListener('input', function(event) {
+	opts.accelerate = parseFloat(this.value)
+	draw()
+})
+
+document.getElementById('random').addEventListener('click', randomize)
+
+window.addEventListener('resize', function(event) {
+	var newWidth = window.innerWidth
+	if (newWidth === width) return
+	if (newWidth < 600 * ratio) {
+		width = canvas.width = canvas.height = newWidth * ratio
+		canvas.style.width = canvas.style.height = newWidth + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600 * ratio) {
+		width = canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
+	}
+})
+
+randomize()
+
+</script>
+
+	</body>
+</html>

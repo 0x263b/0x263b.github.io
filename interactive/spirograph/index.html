@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Spirograph</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="interactive interactive_spirograph interactive_spirograph_index">
+		<canvas id="canvas"></canvas>
+
+<div class="controls">
+	<div class="slider">
+		<label for="outer">Outer Radius</label>
+		<input type="range" id="outer" name="outer"
+			min="0" max="300" step="1">
+		<output name="outerLabel" id="outerLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="inner">Inner Radius</label>
+		<input type="range" id="inner" name="inner"
+			min="0" max="300" step="1">
+		<output name="innerLabel" id="innerLabel"></output>
+	</div>
+	<div class="slider">
+		<label for="distance">Distance</label>
+		<input type="range" id="distance" name="distance"
+			min="0" max="300" step="1">
+		<output name="distanceLabel" id="distanceLabel"></output>
+	</div>
+
+	<div class="slider">
+		<button id="random">Randomize</button>
+	</div>
+</div>
+
+<script>
+'use strict'
+var canvas = document.getElementById('canvas')
+var ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = Math.min(window.innerWidth, 600)
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + 'px'
+ctx.scale(ratio, ratio)
+
+var t = 0
+var R, r, p, l, k
+
+function draw() {
+	for (var i = 0; i < 800; ++i) {
+		// This is the core spirograph algorithm. Adjusted to be in the middle of the screen. 
+		var x = R * ((1 - k) * Math.cos(t) + l * k * Math.cos((1 - k) / k * t)) + width / 2
+		var y = R * ((1 - k) * Math.sin(t) - l * k * Math.sin((1 - k) / k * t)) + width / 2
+
+		var rgb = [
+			Math.round((Math.sin(t) + 1) * 128),
+			Math.round((Math.sin(t + Math.PI * 2 / 3) + 1) * 128),
+			Math.round((Math.sin(t + Math.PI * 4 / 3) + 1) * 128)
+		]
+
+		ctx.fillStyle = 'rgba(' + rgb.join(',') + ', 0.5)'
+		ctx.fillRect(x, y, 1, 1)
+		ctx.fill()
+		t += 0.001
+	}
+	window.requestAnimationFrame(draw)
+}
+
+function randomMax(max) {
+	return Math.floor(Math.random() * max)
+}
+
+function randomize() {
+	R = randomMax(300)
+	r = randomMax(300)
+	p = randomMax(300)
+
+	// A real spirograph would have R > r > p
+	// r = randomMax(R)
+	// p = randomMax(r)
+	
+	document.getElementById('outer').value = R
+	document.getElementById('inner').value = r
+	document.getElementById('distance').value = p
+
+	outerLabel.value = R
+	innerLabel.value = r
+	distanceLabel.value = p
+
+	setValues()
+}
+
+function setValues() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	l = p / r
+	k = r / R
+}
+
+randomize()
+draw()
+
+document.getElementById('outer').addEventListener('input', function(event) {
+	R = parseFloat(this.value)
+	outerLabel.value = this.value
+	setValues()
+})
+document.getElementById('inner').addEventListener('input', function(event) {
+	r = parseFloat(this.value)
+	innerLabel.value = this.value
+	setValues()
+})
+document.getElementById('distance').addEventListener('input', function(event) {
+	p = parseFloat(this.value)
+	distanceLabel.value = this.value
+	setValues()
+})
+
+document.getElementById('random').addEventListener('click', randomize)
+
+window.addEventListener('resize', function(event) {
+	var newWidth = window.innerWidth
+	if (newWidth === width) return
+	if (newWidth < 600 * ratio) {
+		width = canvas.width = canvas.height = newWidth * ratio
+		canvas.style.width = canvas.style.height = newWidth + 'px'
+		ctx.scale(ratio, ratio)
+	} else if (width !== 600 * ratio) {
+		width = canvas.width = canvas.height = 600 * ratio
+		canvas.style.width = canvas.style.height = '600px'
+		ctx.scale(ratio, ratio)
+	}
+})
+
+</script>
+
+	</body>
+</html>

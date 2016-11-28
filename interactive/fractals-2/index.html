@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Fractals 2</title>
+
+		<link rel="stylesheet" href="/stylesheets/controls.css" type="text/css">
+
+	</head>
+
+	<body class="interactive interactive_fractals-2 interactive_fractals-2_index">
+		<canvas id="canvas"></canvas>
+
+<div class="controls">
+<div class="slider">
+		<label for="sides">Sides</label>
+		<input type="range" id="sides" name="sides" 
+			min="2" max="10" step="1" value="5">
+		<output name="sidesLabel" id="sidesLabel">5</output>
+	</div>
+</div>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = Math.min(window.innerWidth, 600)
+
+canvas.width = canvas.height = width * ratio
+canvas.style.width = canvas.style.height = width + "px"
+ctx.scale(ratio, ratio)
+
+ctx.globalCompositeOperation = 'screen'
+
+var sides = 5
+
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	drawCircle(width, width, width)
+}
+
+function drawCircle(x, y, diam) {
+
+	diam *= .5
+
+	for (var i = 0; i < sides; i++) {
+		if (diam < 10) {
+			continue
+		}
+		drawCircle(
+			x + Math.cos((2*Math.PI) / sides * i - Math.PI / 2) * diam,
+			y + Math.sin((2*Math.PI) / sides * i - Math.PI / 2) * diam,
+			diam
+		)
+	}
+
+	ctx.beginPath()
+	ctx.arc(x/2, y/2, diam/2, 0, 2 * Math.PI)
+	ctx.fillStyle = `hsla(${diam % 360}, 75%, 50%, ${0.75/sides})`
+	ctx.closePath()
+	ctx.fill()
+}
+
+document.getElementById('sides').addEventListener('input', function(event) {
+	sides = parseFloat(this.value)
+	sidesLabel.value = this.value
+	render()
+})
+
+render()
+</script>
+
+	</body>
+</html>

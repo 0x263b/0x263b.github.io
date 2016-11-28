@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Glitch</title>
+
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+	</head>
+
+	<body class="wip wip_glitch wip_glitch_index">
+		<canvas id='canvas'></canvas>
+
+<script>
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width = width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+
+window.onresize = function(event) {
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
+}
+
+function rand(max, min) {
+	return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function effect(img) {
+	for (var i = 0; i < rand(1, 13); ++i) {
+		var x = Math.random() * img.width
+		var y = Math.random() * img.height
+		var spliceWidth = img.width - x
+		var spliceHeight = rand(3, img.height / 2)
+		ctx.drawImage(canvas, 0, y, spliceWidth, spliceHeight, x, y, spliceWidth, spliceHeight)
+		ctx.drawImage(canvas, spliceWidth, y, x, spliceHeight, 0, y, x, spliceHeight)
+	}
+}
+
+function init(img) {
+	var offset = img.width * 0.0001
+	setInterval(function() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		ctx.drawImage(img, 0, 0, img.width, img.height, offset, 0, img.width - offset * 2, img.height)
+		setTimeout(effect.bind(null, canvas, ctx, img), rand(1000, 4000))
+	}, 100)
+}
+
+var img = new Image()
+img.src = '/images/palm_tree.jpg'
+img.addEventListener('load', function() {
+	init(img)
+}, false)
+
+</script>
+
+<div id="fullscreen">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M89,36c1.104,0,2-0.896,2-2V11c0-1.104-0.896-2-2-2H66c-1.104,0-2,0.896-2,2s0.896,2,2,2h18.137  L57.761,39.376c-0.781,0.781-0.781,2.047,0,2.829c0.39,0.39,0.902,0.585,1.414,0.585s1.024-0.195,1.414-0.585L87,15.794V34  C87,35.104,87.896,36,89,36z"></path><path d="M43.414,56.586c-0.78-0.781-2.048-0.781-2.828,0L14,83.172V65c0-1.104-0.896-2-2-2s-2,0.896-2,2v23  c0,1.104,0.896,2,2,2h23c1.104,0,2-0.896,2-2s-0.896-2-2-2H16.829l26.585-26.586C44.195,58.633,44.195,57.367,43.414,56.586z"></path></svg>
+</div>
+<div id="signature"><a href="/">Abram</a></div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
+
+	</body>
+</html>

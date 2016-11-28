@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Mistify</title>
+
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+	</head>
+
+	<body class="screensaver screensaver_mistify screensaver_mistify_index">
+		<canvas id='canvas'></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+
+window.onresize = function(event) {
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
+}
+
+var shapes = [],
+	speed = 7
+
+function Point() {
+	this.x = parseInt(Math.random() * width)
+	this.y = parseInt(Math.random() * height)
+	this.xVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
+	this.yVel = parseInt(Math.random() * 2) == 1 ? 1 : -1
+}
+
+function Shape() {
+	this.color = '#' + Math.floor(Math.random() * 16777215).toString(16)
+	this.points = []
+
+	for (var i = 0; i < 4; i++) {
+		this.points.push(new Point())
+	}
+
+	this.draw = function() {
+		ctx.strokeStyle = this.color
+		ctx.beginPath()
+		ctx.moveTo(this.points[0].x, this.points[0].y)
+
+		for (var i = 1; i < this.points.length; i++) {
+			var p = this.points[i]
+
+			ctx.lineTo(p.x, p.y)
+		}
+
+		ctx.lineTo(this.points[0].x, this.points[0].y)
+		ctx.closePath()
+		ctx.stroke()
+	}
+
+	this.update = function() {
+		for (var i = 0; i < this.points.length; i++) {
+			var p = this.points[i]
+
+			p.x += p.xVel * speed
+			p.y += p.yVel * speed
+
+			if (p.x > width) p.xVel = Math.abs(p.xVel) * -1
+			if (p.x < 0) p.xVel = Math.abs(p.xVel)
+
+			if (p.y > height) p.yVel = Math.abs(p.yVel) * -1
+			if (p.y < 0) p.yVel = Math.abs(p.yVel)
+		}
+	}
+}
+
+var s = new Shape()
+var s2 = new Shape()
+
+function render() {
+	ctx.fillStyle = 'rgba(0,0,0,0.1)'
+	ctx.fillRect(0, 0, width, height)
+
+	s.update()
+	s.draw()
+
+	s2.update()
+	s2.draw()
+
+	requestAnimationFrame(render)
+}
+
+render()
+</script>
+
+<div id="fullscreen">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M89,36c1.104,0,2-0.896,2-2V11c0-1.104-0.896-2-2-2H66c-1.104,0-2,0.896-2,2s0.896,2,2,2h18.137  L57.761,39.376c-0.781,0.781-0.781,2.047,0,2.829c0.39,0.39,0.902,0.585,1.414,0.585s1.024-0.195,1.414-0.585L87,15.794V34  C87,35.104,87.896,36,89,36z"></path><path d="M43.414,56.586c-0.78-0.781-2.048-0.781-2.828,0L14,83.172V65c0-1.104-0.896-2-2-2s-2,0.896-2,2v23  c0,1.104,0.896,2,2,2h23c1.104,0,2-0.896,2-2s-0.896-2-2-2H16.829l26.585-26.586C44.195,58.633,44.195,57.367,43.414,56.586z"></path></svg>
+</div>
+<div id="signature"><a href="/">Abram</a></div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
+
+	</body>
+</html>

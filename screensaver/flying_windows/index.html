@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+	<head>
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta charset="utf-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+		<meta name="theme-color" content="#000000">
+
+		<title>Flying Windows</title>
+
+		<link rel="stylesheet" href="/stylesheets/fullscreen.css" type="text/css">
+
+	</head>
+
+	<body class="screensaver screensaver_flying_windows screensaver_flying_windows_index">
+		<canvas id="canvas"></canvas>
+
+<script type="text/javascript">
+'use strict'
+
+var canvas = document.getElementById('canvas'),
+	ctx = canvas.getContext('2d')
+
+var ratio = window.devicePixelRatio
+var width = window.innerWidth
+var height = window.innerHeight
+
+canvas.width = width * ratio
+canvas.height = height * ratio
+canvas.style.width =  width + "px"
+canvas.style.height = height + "px"
+
+ctx.scale(ratio, ratio)
+
+window.onresize = function(event) {
+	ratio = window.devicePixelRatio
+	width = window.innerWidth
+	height = window.innerHeight
+
+	canvas.width = width * ratio
+	canvas.height = height * ratio
+	canvas.style.width =  width + "px"
+	canvas.style.height = height + "px"
+	
+	ctx.scale(ratio, ratio)
+}
+
+var a = [],
+	asize = 40
+
+var l1 = new Image(),
+	l2 = new Image(),
+	l3 = new Image(),
+	l4 = new Image(),
+	l5 = new Image(),
+	l6 = new Image()
+
+l1.src = '/images/flying_windows/WL1.png'
+l2.src = '/images/flying_windows/WL2.png'
+l3.src = '/images/flying_windows/WL3.png'
+l4.src = '/images/flying_windows/WL4.png'
+l5.src = '/images/flying_windows/WL5.png'
+l6.src = '/images/flying_windows/WL6.png'
+
+function entinit(arr) {
+	arr = {
+		posX: width / 2,
+		posY: height / 2,
+		scale: 1.1,
+		speedexp: Math.random() * 0.5 + 1.2,
+		angle: Math.random() * 2,
+		img: Math.ceil(Math.random() * 6),
+		skip: Math.ceil(Math.random() * 100)
+	}
+	arr.posX = arr.posX + Math.random() * (width / 4) * Math.cos(Math.PI * arr.angle)
+	arr.posY = arr.posY + Math.random() * (height / 4) * Math.sin(Math.PI * arr.angle)
+	return arr
+}
+
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+	for (var i = 0; i < asize; i++) {
+		if (a[i] == undefined){
+			a[i] = entinit(a[i])
+		}
+		if (a[i].skip <= 0) {
+			var curimg = null
+
+			switch (a[i].img) {
+				case 0:
+				case 1:
+					curimg = l1
+					break
+				case 2:
+					curimg = l2
+					break
+				case 3:
+					curimg = l3
+					break
+				case 4:
+					curimg = l4
+					break
+				case 5:
+					curimg = l5
+					break
+				case 6:
+					curimg = l6
+					break
+			}
+
+			a[i].scale = a[i].scale + a[i].speedexp / 4
+			a[i].speedexp = 1.03 * Math.pow(a[i].speedexp, 1.02)
+
+			if (Math.cos(Math.PI * a[i].angle) < 0) {
+				a[i].posX = a[i].posX - (Math.abs(a[i].speedexp * Math.cos(Math.PI * a[i].angle)))
+			} else {
+				a[i].posX = a[i].posX + a[i].speedexp * Math.cos(Math.PI * a[i].angle)
+			}
+
+			if (Math.sin(Math.PI * a[i].angle) < 0) {
+				a[i].posY = a[i].posY - (Math.abs(a[i].speedexp * Math.sin(Math.PI * a[i].angle)))
+			} else {
+				a[i].posY = a[i].posY + a[i].speedexp * Math.sin(Math.PI * a[i].angle)
+			}
+
+			if (a[i].posX + a[i].scale < 0 || a[i].posX - a[i].scale > width ||
+				a[i].posY + a[i].scale < 0 || a[i].posY - a[i].scale > height) {
+				a[i] = entinit(a[i])
+			}
+
+			ctx.drawImage(curimg, a[i].posX - a[i].scale / 2, a[i].posY - a[i].scale / 2, a[i].scale, a[i].scale)
+		} else {
+			a[i].skip = a[i].skip - 1
+		}
+	}
+	requestAnimationFrame(render)
+}
+
+render()
+</script>
+</body>
+
+<div id="fullscreen">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M89,36c1.104,0,2-0.896,2-2V11c0-1.104-0.896-2-2-2H66c-1.104,0-2,0.896-2,2s0.896,2,2,2h18.137  L57.761,39.376c-0.781,0.781-0.781,2.047,0,2.829c0.39,0.39,0.902,0.585,1.414,0.585s1.024-0.195,1.414-0.585L87,15.794V34  C87,35.104,87.896,36,89,36z"></path><path d="M43.414,56.586c-0.78-0.781-2.048-0.781-2.828,0L14,83.172V65c0-1.104-0.896-2-2-2s-2,0.896-2,2v23  c0,1.104,0.896,2,2,2h23c1.104,0,2-0.896,2-2s-0.896-2-2-2H16.829l26.585-26.586C44.195,58.633,44.195,57.367,43.414,56.586z"></path></svg>
+</div>
+<div id="signature"><a href="/">Abram</a></div>
+
+<script>
+'use strict'
+function toggleFullScreen() {
+	var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement
+
+	if (!fullscreenElement) {
+		// Native
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen()
+		// Firefox
+		} else if (document.documentElement.mozRequestFullScreen) {
+			document.documentElement.mozRequestFullScreen()
+		// Webkit
+		} else if (document.documentElement.webkitRequestFullscreen) {
+			document.documentElement.webkitRequestFullscreen()
+		// IE/Edge
+		} else if (document.documentElement.msRequestFullscreen) {
+			document.documentElement.msRequestFullscreen()
+		}
+	} else {
+		// Native
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		// Webkit
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen()
+		// Firefox
+		} else if (document.mozExitFullscreen) {
+			document.mozExitFullscreen()
+		// IE/Edge
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen()
+		}
+	}
+}
+document.getElementById('fullscreen').addEventListener('click', toggleFullScreen)
+</script>
+
+	</body>
+</html>
