@@ -15,7 +15,7 @@
 	<body class="screensaver screensaver_tree screensaver_tree_index">
 		<canvas id="canvas"></canvas>
 
-<script type="text/javascript">
+<script>
 'use strict'
 
 var canvas = document.getElementById('canvas'),
@@ -31,10 +31,11 @@ canvas.style.width =  width + "px"
 canvas.style.height = height + "px"
 
 ctx.scale(ratio, ratio)
+ctx.lineCap = 'round'
 
-var t = 0
-var depth = Math.round(height * 0.125)
-var topiary = new branch(depth, 0, 0)
+var tick = 0
+var length = Math.round(height * 0.125)
+var branches = new branch(length, 0, 0)
 var count = 0
 
 function rand(min, max) {
@@ -46,49 +47,49 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	ctx.translate(width / 2, height)
 	ctx.rotate(-Math.PI * 0.5)
-	topiary.disp()
+	branches.dispalce()
 	ctx.restore()
 }
 
-function branch(len, ang, gen) {
-	this.len = len
-	this.ang = ang
-	this.gen = gen
+function branch(length, angle, gen) {
+	this.length = length
+	this.angle = angle
+	this.generation = gen
 	this.limb = []
 	this.sway = 0
 	this.mult = rand(0.01, 0.1)
 	this.spawn = 0
-	this.vel = 0
+	this.velocity = 0
 
 	if (gen < 10) {
-		this.limb.push(new branch(len * rand(0.8, 0.99),
-			rand(0, Math.PI / 6), this.gen + 1))
-		this.limb.push(new branch(len * rand(0.8, 0.99),
-			rand(0, -Math.PI / 6), this.gen + 1))
+		this.limb.push(new branch(length * rand(0.8, 0.99),
+			rand(0, Math.PI / 6), this.generation + 1))
+		this.limb.push(new branch(length * rand(0.8, 0.99),
+			rand(0, -Math.PI / 6), this.generation + 1))
 	}
 
-	this.disp = function() {
+	this.dispalce = function() {
 		this.sway++
 		ctx.save()
-		this.vel *= 0.9
+		this.velocity *= 0.9
 		var dif = 1 - this.spawn
-		this.vel += (dif * 0.1)
-		this.spawn += this.vel
+		this.velocity += (dif * 0.1)
+		this.spawn += this.velocity
 
-		ctx.strokeStyle = `hsla(${((t + this.gen * 5) % 360)}, 100%, ${5 * this.gen + 35}%, 1)`
-		ctx.lineWidth = 12 - this.gen
+		ctx.strokeStyle = `hsl(${((tick + this.generation * 5) % 360)}, 100%, ${6 * this.generation + 35}%)`
+		ctx.lineWidth = 12 - this.generation
 		ctx.beginPath()
-		ctx.rotate(this.ang + (Math.sin(this.sway * this.mult) * Math.PI / 128))
+		ctx.rotate(this.angle + (Math.sin(this.sway * this.mult) * Math.PI / 128))
 		ctx.moveTo(0, 0)
-		ctx.lineTo(this.len * this.spawn, 0)
+		ctx.lineTo(this.length * this.spawn, 0)
 		ctx.stroke()
 
-		ctx.translate(this.len * this.spawn, 0)
+		ctx.translate(this.length * this.spawn, 0)
 
 		if (this.spawn > 0.6) {
 			for (var i = 0; i < this.limb.length; i++) {
 				var limb = this.limb[i]
-				limb.disp()
+				limb.dispalce()
 			}
 		}
 		ctx.restore()
@@ -97,7 +98,7 @@ function branch(len, ang, gen) {
 
 function loop() {
 	count++
-	t -= .5
+	tick -= .5
 	if (count % 2) {
 		draw()
 	}
@@ -107,8 +108,7 @@ function loop() {
 loop()
 
 setInterval(function(){
-	t = 0
-	topiary = new branch(depth, 0, 0)
+	branches = new branch(length, 0, 0)
 	count = 0
 	loop()
 }, 25000)
@@ -125,7 +125,7 @@ window.onresize = function(event) {
 	
 	ctx.scale(ratio, ratio)
 
-	depth = Math.round(height * 0.125)
+	length = Math.round(height * 0.125)
 }
 
 </script>

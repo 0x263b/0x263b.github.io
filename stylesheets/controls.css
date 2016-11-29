@@ -56,48 +56,49 @@ output, label span {
       background-color: MediumTurquoise; }
     .slider input[type=range]:focus::-webkit-slider-thumb {
       outline: none;
-      background-color: MediumTurquoise; }
+      background-color: White; }
     .slider input[type=range]:focus::-moz-range-track {
       outline: none;
       background-color: MediumTurquoise; }
     .slider input[type=range]:focus::-moz-range-thumb {
       outline: none;
-      background-color: MediumTurquoise; }
+      background-color: White; }
   .slider input[type=range]::-webkit-slider-runnable-track {
     -webkit-appearance: none;
-    background-color: #777;
-    height: 5px; }
+    background-color: #333;
+    height: 8px; }
   .slider input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     background-color: #777;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #333;
+    width: 16px;
+    height: 16px;
+    border: 0;
     border-radius: 50%;
-    margin-top: -8px; }
+    margin-top: -4px; }
   .slider input[type=range]::-moz-range-track {
     box-shadow: 0 0 0 transparent, 0 0 0 transparent;
-    background-color: #777;
-    height: 5px; }
+    background-color: #333;
+    height: 8px; }
   .slider input[type=range]::-moz-range-thumb {
     background-color: #777;
-    width: 15px;
-    height: 15px;
-    border: 3px solid #333;
+    width: 16px;
+    height: 16px;
+    border: 0;
     border-radius: 50%; }
   .slider input[type=range]::-ms-track {
-    background-color: #777;
-    height: 5px; }
+    background-color: #333;
+    height: 8px; }
   .slider input[type=range]::-ms-thumb {
     background-color: #777;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #333;
-    border-radius: 50%; }
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 50%;
+    margin-top: -2px; }
   .slider input[type=range]::-ms-fill-lower {
-    background-color: #000; }
+    background-color: transparent; }
   .slider input[type=range]::-ms-fill-upper {
-    background-color: #000; }
+    background-color: transparent; }
 
 input[type=color] {
   vertical-align: middle;
@@ -139,7 +140,6 @@ input[type=color] {
     width: 100%;
     height: 26px;
     cursor: pointer;
-    animate: 0.2s;
     box-shadow: 0px 0px 0px transparent, 0px 0px 0px transparent;
     border-radius: 0px;
     border: 1px solid black; }
@@ -148,7 +148,7 @@ input[type=color] {
     border: 3px solid white;
     border-radius: 0;
     height: 28px;
-    width: 20px;
+    width: 16px;
     background: transparent;
     cursor: pointer;
     -webkit-appearance: none;
@@ -157,7 +157,6 @@ input[type=color] {
     width: 100%;
     height: 26px;
     cursor: pointer;
-    animate: 0.2s;
     box-shadow: 0px 0px 0px transparent, 0px 0px 0px transparent;
     background: transparent;
     border-radius: 0px;
@@ -167,10 +166,30 @@ input[type=color] {
     border: 3px solid white;
     border-radius: 0;
     height: 28px;
-    width: 20px;
+    width: 16px;
     background: transparent;
     cursor: pointer;
     margin-top: -2px; }
+  .hsl input[type=range]::-ms-track {
+    width: 100%;
+    height: 26px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px transparent, 0px 0px 0px transparent;
+    background: transparent;
+    border-radius: 0px;
+    border: 1px solid black; }
+  .hsl input[type=range]::-ms-thumb {
+    box-shadow: inset 0px 0px 0 1px black, 0px 0px 0 1px black;
+    border: 3px solid white;
+    border-radius: 0;
+    height: 20px;
+    width: 16px;
+    background: transparent;
+    cursor: pointer; }
+  .hsl input[type=range]::-ms-fill-lower {
+    background-color: transparent; }
+  .hsl input[type=range]::-ms-fill-upper {
+    background-color: transparent; }
   .hsl #hue {
     background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%); }
 
